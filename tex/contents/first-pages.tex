@@ -1,8 +1,8 @@
 % Title, Portuguese and English titles, and thesis year.
-\newcommand{\authorname}{Rui Marcos\newline Brandão Antunes}
-\newcommand{\englishtitle}{\LaTeX\ template for theses at University of Aveiro}
-\newcommand{\portuguesetitle}{Template \LaTeX\ para teses na Universidade de Aveiro}
-\newcommand{\thesisyear}{2021}
+\newcommand{\authorname}{Carlos Manuel\newline Basílio Oliveira}
+\newcommand{\englishtitle}{Towards a scalable Software Architecture for Water Utilities' Decision Support Systems}
+\newcommand{\portuguesetitle}{Arquitectura de Software Escalável para Sistemas de Apoio à Decisão para Entidades Gestoras de Àgua}
+\newcommand{\thesisyear}{2022}
 
 % To avoid wrong back references with the biblatex package.
 \pagenumbering{alph}
@@ -46,9 +46,11 @@
   \vspace*{7mm}
   \TITLE{}{\englishtitle}
   \vspace*{15mm}
-  \TEXT{}{Dissertação/Tese apresentada à Universidade de Aveiro para cumprimento dos requisitos necessários à obtenção do grau de Mestre/Doutor em X, realizada sob a orientação científica de Y, Professor do Departamento Z da Universidade de Aveiro.}
+  \TEXT{}{Dissertação apresentada à Universidade de Aveiro para cumprimento dos requisitos necessários à obtenção do grau de Mestre em Engenharia Informática, realizada sob a orientação científica do Doutor \mbox{André Zúquete}, auxiliar do Departamento de Eletrónica, Telecomunicações e Informática da Universidade de Aveiro, e do Doutor António Gil
+  D’Orey Andrade Campos (co-orientador), Professor auxiliar do Departamento de Engenharia
+  Mecânica da Universidade de Aveiro.}
   \vspace*{\fill}
-  \TEXT{}{Apoio financeiro da FCT e do FSE no âmbito do III Quadro Comunitário de Apoio. (se aplicável)}
+  %\TEXT{}{Apoio financeiro da FCT e do FSE no âmbito do III Quadro Comunitário de Apoio. (se aplicável)}
 \EndTitlePage
 
 % Empty page.
@@ -82,10 +84,10 @@
 \TitlePage
   \vspace*{55mm}
   \TEXT{\textbf{agradecimentos}}
-       {...}
+       {Agradeço o apoio da minha família, amigos e colegas da SCUBIC, e ao prof. Zúquete pela paciência e disponibilidade estes últimos anos}
   \vspace*{5mm}
   \TEXT{\textbf{acknowledgments}}
-       {...}
+       {I wish to thank my family, friends and coworkers at SCUBIC for the support, as well as prof. Zúquete for the availability and patience through these past years}
 \EndTitlePage
 
 % Empty page.
@@ -93,9 +95,9 @@
 
 \TitlePage
   \vspace*{55mm}
-  \TEXT{\textbf{Palavras-chave}}{Chave, palavra.}
+  \TEXT{\textbf{Palavras-chave}}{Àgua, Arquitectura de Software, Sistemas de Apoio à Decisão, Entidades Gestoras de Água}
   \vspace*{5mm}
-  \TEXT{\textbf{Resumo}}{Este é o primeiro parágrafo do resumo.\newline Segundo parágrafo.\newline Terceiro parágrafo.}
+  \TEXT{\textbf{Resumo}}{O fornecimento de àgua às populações é um símbolo de qualquer grande sociedade, desde o início da Civilização. Hoje em dia, enormes quantidades de àgua são fornecidas constantemente a residências e indústrias variadas utilizando motores eléctricos acopolados a bombas de àgua que consomem vastas quantidades de energia eléctrica. Com o recurso a tarifas de electricidade variáveis e dinâmicas, dados em tempo real de variados sensores nas empresas de fornecimento de àgua e a modelos da rede de distribuição de àgua, o software da SCUBIC consegue monitorizar e prever consumos de àgua e assim optimizar a operação destas bombas por forma a baixar os custos operacionais das empresas gestoras de àgua.\newline O software fornecido pela SCUBIC é uma amálgama de serviços construídos numa fase embrionária da empresa, que por se manterem inalterados ao longo dos anos, não se adequam mais ao plano de negócios e escalada de requisitos por parte dos \textit{stakeholders}. Daqui surge então a necessidade de construir uma nova arquitectura de software capaz de responder aos novos desafios numa indústria cada vez mais instrumentalizada e evoluída como a da Gestão de Água.\newline Recorrendo a métodos de engenharia de software, migração de arquitecturas de software e planeamento cuidadoso, foi possível alterar a arquitectura do software usado pela SCUBIC. Após rever os resultados gerados pelos indicadores de performance, conclui-se que a migração foi um sucesso.}
 \EndTitlePage
 
 % Empty page.
@@ -105,7 +107,7 @@
   \vspace*{55mm}
   \TEXT{\textbf{Keywords}}{Key, word.}
   \vspace*{5mm}
-  \TEXT{\textbf{Abstract}}{This is the first paragraph of the abstract.\newline Second paragraph.\newline Third paragraph.}
+  \TEXT{\textbf{Abstract}}{Water Supply is a staple of all civilizations throughout History. Nowadays, huge amounts of water are constantly supplied to homes and businesses, requiring the use of electric pumps which consume vast amounts of electric energy. \newline By using variable and dynamic electric tariffs, multiple real-time sensor date from Water Utilities and Water Network Modelling, the SCUBIC software is able to monitor the water networks, predict water consumption and optimize pump operation allowing the Water Utilities to lower operational costs.\newline Built during an earlier phase of the company, the SCUBIC software is a monolithic amalgamation of  services, full of compromises that cannot fulfill the latest requirements from the \textit{stakeholders} and business plan. \newline Therefore, a need to build a more modular and scalable software architecture for this software becomes apparent. Using careful planning, software engineering knowledge and literature regarding software architecture migration, a new software architecture was implemented. Results from comparisons between the older and newer architectures prove that the migration was a success and complies with the requirements set at the beginning of the project.}
 \EndTitlePage
 
 % Empty page.
