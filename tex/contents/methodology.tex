@@ -54,3 +54,18 @@ This web platform allows the visualization of the Timeseries data from the \text
 \label{methodology:sss:telegraf}
 
 The \textbf{Telegraf} container is used to gather the files containing the raw sensor data sent from the Client to the \textbf{SFTP} server. Since this container shares the file upload location folder with the \textbf{SFTP}, through a convoluted process of storing the filename of the last file uploaded, periodically checking for the next file and file handling \textit{spaghetti} code that spans multiple files and has an enormous codebase that weighs the docker image's file size considerably. 
+
+\subsubsection{SFTP}
+\label{methodology:sss:sftp}
+
+\subsubsection{Nginx + Let's Encrypt}
+\label{methodology:sss:nginxletsencrypt}
+
+\subsubsection{Redis}
+\label{methodology:sss:redis}
+
+\subsubsection{Web Dev}
+\label{methodology:sss:webdev}
+
+\subsubsection{Workers}
+\label{methodology:sss:workers}
