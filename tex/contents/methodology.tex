@@ -7,12 +7,18 @@
 \subsection{Current Architecture}
 \label{methodology:ss:current-architecture}
 
-The current software architecture is still in use as of the date of publication of this body of work. This older architecture consists of an amalgamation of Docker containers, each running a different service. Each Client has its own, \gls{vps}, wherein these Docker containers are deployed. 
+The current software architecture is still in use as of the date of publication of this body of work. This older architecture consists of an amalgamation of Docker containers, each running a different service. Each Client has its own \gls{vps} wherein these Docker containers are deployed. 
+
+\subsubsection{\gls{vpc}}
+\label{methodology:sss:vpc}
 
 These \gls{vps} are general-purpose \gls{aws} \gls{ec2} \textit{Instances}. As can be seen on the diagram presented on \Cref{fig:old-arch-overview.drawio.pdf}, these instances are deployed to the same \gls{vpc}, sharing a private network between them. The Reverse Proxy serves as, as the name implies, as a reverse proxy to enable the use of a single \gls{eip}, a single \gls{nic} by all Clients's servers, since the availability of public IPs is limited to five \gls{eip}.
 \input{tex/contents/fig/old-arch-overview.drawio.pdf.tex}
 
-Each VPS runs a Docker container for each one of the following services:
+\subsubsection{\gls{vpc}}
+\label{methodology:sss:vpc}
+
+Each \gls{ec2} instance runs a Docker container for each one of the following services:
 
 \begin{itemize}
 
