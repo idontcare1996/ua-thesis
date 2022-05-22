@@ -12,4 +12,5 @@ find ../img/diagrams/pdf -name *.drawio.pdf -exec touch -a {}.tex \;
 # Move all tex files to the fig folder
 mv -n ../img/diagrams/pdf/*.tex ../tex/contents/fig/
 
+# Remove all un-moved files from the pdf folder
 rm -rf ../img/diagrams/pdf/*.tex
