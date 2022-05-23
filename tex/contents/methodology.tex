@@ -1,22 +1,16 @@
-\chapter{Methodology}
-\label{methodology}
+\chapter{Methodology}\label{methodology}
 
-\section{Requirements}
-\label{methodology:s:requirements}
+\section{Requirements}\label{methodology:s:requirements}
 
-\subsection{Current Architecture}
-\label{methodology:ss:current-architecture}
+\subsection{Current Architecture}\label{methodology:ss:current-architecture}
 
 The current software architecture is still in use as of the date of publication of this body of work. This older architecture consists of an amalgamation of Docker containers, each running a different service. Each Client has its own \gls{vps} wherein these Docker containers are deployed. 
 
-\subsubsection{\gls{vpc}}
-\label{methodology:sss:vpc}
+\subsubsection{\gls{vpc}}\label{methodology:sss:vpc}
 
 These \gls{vps} are general-purpose \gls{aws} \gls{ec2} \textit{Instances}. As can be seen on the diagram presented on \Cref{fig:old-arch-overview}, these instances are deployed to the same \gls{vpc}, sharing a private network between them. The Reverse Proxy serves as, as the name implies, as a reverse proxy to enable the use of a single \gls{eip}, a single \gls{eni} by all Clients's servers, since the availability of public IPs is limited to five \gls{eip}.
 \input{tex/contents/fig/old-arch-overview.drawio.pdf.tex}
 
-\subsubsection{\gls{vpc}}
-\label{methodology:sss:vpc}
 
 Each \gls{ec2} instance runs a Docker container for each one of the following services:
 
@@ -39,48 +33,40 @@ Each \gls{ec2} instance runs a Docker container for each one of the following se
 \input{tex/contents/fig/old-arch.drawio.pdf.tex}
 
 
-\subsubsection{Databases}
-\label{methodology:sss:databases}
+\subsubsection{Databases}\label{methodology:sss:databases}
 
 There are two types of databases being used by this architecture: A Timeseries Database, in this case \textbf{InfluxDB}, and an additional general-purpose Document Database: \textbf{MongoDB}. Each type of database has a different role, the first one stores the Client's timeseries data such as sensor information, pump orders, predicted tank levels, etc.
 The second one, the Document Database, is responsible for storing configuration settings for each worker service (optimization, simulation and forecasting), for storing electrical tariffs data and to store sensor device's configurations.
 
-\subsubsection{Grafana}
-\label{methodology:sss:grafana}
+\subsubsection{Grafana}\label{methodology:sss:grafana}
 
 This web platform allows the visualization of the Timeseries data from the \textbf{InfluxDB} database. This is a freely-available platform that runs on a docker container with little to no modifications necessary. The dashboards are built using the built-in tools and allow for complex and very informative data visualization. This is used in both the new and old architecture, since the new visualization platform is still not operational (not within the scope of this body of work).
 
-\subsubsection{Telegraf}
-\label{methodology:sss:telegraf}
+\subsubsection{Telegraf}\label{methodology:sss:telegraf}
 
 The \textbf{Telegraf} container is used to gather the files containing the raw sensor data sent from the Client to the \gls{sftp} server. Since this container shares the file upload location folder with the \gls{sftp}, through a convoluted process of storing the filename of the last file uploaded, periodically checking for the next file and file handling \textit{spaghetti} code that spans multiple files and has an enormous codebase that weighs the docker image's file size considerably. 
 
-\subsubsection{\gls{sftp}}
-\label{methodology:sss:sftp}
+\subsubsection{\gls{sftp}}\label{methodology:sss:sftp}
 
 The \gls{sftp} service here provides a secure method for the Clients to send files containing the Timeseries data to our servers, where they can be processed and turned into actionable insights by the algorithms running in the Workers container. The Client sends their public key (from a cryptographic key pair) when the project start to authenticate against this \gls{sftp} service and uploads the files to a pre-designated folder. These files are then accessed by the Telegraf container which does the file intake.
 
 
-\subsubsection{Nginx + Let's Encrypt}
-\label{methodology:sss:nginxletsencrypt}
+\subsubsection{Nginx + Let's Encrypt}\label{methodology:sss:nginxletsencrypt}
 
 These two containers allow secure Internet access from the \gls{ec2} instance into the correct docker container IP address and port. The Client-facing services Grafana and \gls{sftp} which, respectively, provide the web interface for the \gls{dss} and client file input service are inside containers which themselves can change their internal IP inside the Docker environment. To keep the dynamic IPs in check and allow for these services to be accessed from outside the Docker environment the Nginx container keeps track of this dynamic IP and updates its route table accordingly. This allows for any of these two containers to restart, change their IP address and still not break the routing back to the host \gls{ec2} instance, which has an \gls{eni} associated to it exclusively. This \gls{eni} is then connected, exclusively, to a single \gls{eip} to which the Clients connect, like \Cref{fig:old-arch-nginx} implies.
 
 As for the Let's Encrypt container, this container shares a docker volume with the Nginx container and automatically and periodically maintains the \gls{tls} certificate files that the Nginx requires in order to serve the Grafana interface through \gls{https}. 
 \input{tex/contents/fig/old-arch-nginx.drawio.pdf.tex}
 
-\subsubsection{Redis}
-\label{methodology:sss:redis}
+\subsubsection{Redis}\label{methodology:sss:redis}
 
 We use Redis \parencite{redis_2022} as a message queue backend for Celery \parencite{celery}, enabling other services to send Celery tasks to a queue for asynchronous execution by the Workers.
 
-\subsubsection{Web Dev}
-\label{methodology:sss:webdev}
+\subsubsection{Web Dev}\label{methodology:sss:webdev}
 
 This is an \gls{api}, which also serves a web page, that gives developers access to algorithm configurations and the ability to push Celery tasks to the queue. 
 
-\subsubsection{Workers}
-\label{methodology:sss:workers}
+\subsubsection{Workers}\label{methodology:sss:workers}
 
 This is where the \textit{magic} happens. The Workers' container image is built \textit{in-house} by the development team, using a \textit{Python} Docker image as the base image, wherein all the company's algorithms lay. The \textit{forecast}, \textit{optimization} and \textit{performance analysis}/\gls{kpi} algorithms are individually linked in a Celery configuration file, which defines how each algorithm is executed in a Celery task and how that task is called. This container executes a Celery Worker that executes all Celery Tasks in the Celery task queue.
 
@@ -88,13 +74,11 @@ When a task is sent to the task queue, this Celery Worker who polls the task que
 
 There are two Workers images, the first one contains the code for all algorithms and is the one which starts the Celery worker. The other one, which is internally called Celery Beat, executes a Celery instance in \textit{Beat} mode which sends pre-configured Celery tasks to the queue. This is used to run the algorithms periodically in order to process the Client data and generate actionable insights for the Client.
 
-These algorithms require decent amounts of computer resources, namely CPU power and RAM capacity, in order to be able to run effectively. This is a direct contrast to the remaining components of this old architecture, which see minimal Client use and are therefore less resource intensive. In terms of storage, the situation is the opposite since these algorithms use data stored within the other services - the database services.
+These algorithms require decent amounts of computer resources, namely CPU power and RAM capacity, in order to be able to run effectively. This is a direct contrast to the remaining components of this old architecture, which see minimal Client use and are therefore less resource intensive. In terms of storage, the situation is the opposite since these algorithms use data stored within the other services: the database services.
 
-\section{Issues}
-\label{methodology:s:issues}
+\section{Issues}\label{methodology:s:issues}
 
-\subsection{Resource Sizing}
-\label{methodology:ss:resource sizing}
+\subsection{Resource Sizing}\label{methodology:ss:resource sizing}
 
 \input{tex/contents/fig/caesb-cpu-usage.tex}
 
@@ -104,7 +88,31 @@ The \gls{ec2} instance upon which these services reside can be provisioned and s
 
 Therefore, one of the goals of this work is to attempt to solve this problem. One of the possible general solutions was to split the resources based on their compute resource requirements. Having the workers on a separate \gls{ec2} instance that would be automatically and periodically provisioned and unprovisioned according to a schedule would allow the remaining services to be placed in a lower cost \gls{ec2} instance, lowering the overall infrastructure costs. However, without altering the existing architecture, this would mean that the alteration would only be the place where the Workers' docker container would be executed. Since the amount of \gls{ec2} instances is directly proportional to the amount of Clients, having two instances would duplicate the computational resources, networks connections and storage space needed to maintain the platform for all Clients. This would exacerbate the problem of limited compute resources available to our \gls{aws} account.
 
-\subsection{Limited Compute Resources}
-\label{methodology:ss:limited-compute-resources}
+\subsection{Limited Compute Resources}\label{methodology:ss:limited-compute-resources}
 
-One of the issues with the old architecture is that the number of \gls{ec2} instances needed was directly tied to the amount of Clients, since each Client required its own instance to host the platform, generating what is called a Scalability problem. For the company's \gls{aws} account, a limit of thirty-two (32) \gls{vcpu} units (each \gls{vcpu} corresponds to a processing thread in a CPU core) was imposed by Amazon as default, which meant that the sum of \gls{ec2} instance's \gls{vcpu} units could not surpass this value. Each client requires an \gls{ec2} instance of the type \textit{t3a.large} or \textit{t3a.xlarge}, respectively two (2) or four (4) \gls{vcpu} units, depending on the Client's Water Network's size and complexity and contracted services. This would mean that the amount of clients was limited from sixteen (16) clients if they all used the smaller instance or down to eight (8) clients if these Clients required more resources. As can be concluded this is a hard limit on the amount of clients that can be served simultaneously by the company, which is obviously a problem.
+One of the issues with the old architecture is that the number of \gls{ec2} instances needed was directly tied to the amount of Clients, since each Client required its own instance to host the platform, generating what is called a Scalability problem. For the company's \gls{aws} account, a limit of thirty-two (32) \gls{vcpu} units (each \gls{vcpu} corresponds to a processing thread in a CPU core) was imposed by Amazon as default, which meant that the sum of \gls{ec2} instance's \gls{vcpu} units could not surpass this value. Each client requires an \gls{ec2} instance of the type \textit{t3a.large} or \textit{t3a.xlarge}, respectively two (2) or four (4) \gls{vcpu} units, depending on the Client's Water Network's size and complexity and contracted services. This would mean that the amount of clients was limited from sixteen (16) clients if they all used the smaller instance or down to eight (8) clients if these Clients required more resources. As can be concluded this is a hard limit on the amount of clients that can be served simultaneously by the company, which is an obvious problem.
+
+\subsection{Individual Codebases}\label{methodology:ss:individual-codebases}
+
+Besides an individual \gls{ec2} instance, each Client also has an individual GitLab \parencite{gitlab_2022} project, which is composed of several, different, Git \parencite{git} code repositories. Each GitLab project contains the following repositories:
+
+\begin{itemize}
+
+    \item \textbf{dbs} (Databases configurations, build files for databases' docker images, deployment scripts)
+    \item \textbf{Workers} (Build files for the Workers' docker images)
+    \item \textbf{DBconnectors} (Standardized code for database access)
+    \item \textbf{forecast\_.optimization\_.api} (Code and build files for the Web Dev docker image)
+    
+\end{itemize}
+
+In the \textbf{dbs} repository, we can find build scripts for custom docker images for InfluxDB, Nginx and Telegraf. Also, here reside the scripts that are used to remotely deploy docker containers to the \gls{ec2} instances as well as the \textit{docker-compose} configuration files.
+
+
+
+\subsection{Deployment}\label{methodology:ss:deployment}
+
+When deploying new functionality or code fixes to Client's servers that use the old architecture, this process can quickly become a multi-hour endeavor. Despite being a somewhat modular architecture, given that each service has its own docker container, they are not independent of each other and are dependent on each other when initializing the containers. On some deployment procedures, namely when changing code in the Workers container, it requires updating the Workers' docker image, running GitLab's \gls{cicd} pipelines for this deployment of the Workers' docker image and then tag a completely different repository inside the same Client's GitLab project so that it triggers another \gls{cicd} pipeline which replaces all the containers within the Client's \gls{ec2} instance with the \textit{latest} version of each service's container image.
+
+
+
+
