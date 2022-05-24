@@ -64,7 +64,7 @@ We use Redis \parencite{redis_2022} as a message queue backend for Celery \paren
 
 \subsubsection{Web Dev}\label{methodology:sss:webdev}
 
-This is an \gls{api}, which also serves a web page, that gives developers access to algorithm configurations and the ability to push Celery tasks to the queue. 
+Based on Flask \parencite{pallets_2022}, this web application serves an \gls{api} as well as serving a web page that gives developers access to algorithm configurations and the ability to push Celery tasks to the queue. This application connects directly to both databases.
 
 \subsubsection{Workers}\label{methodology:sss:workers}
 
@@ -75,6 +75,10 @@ When a task is sent to the task queue, this Celery Worker who polls the task que
 There are two Workers images, the first one contains the code for all algorithms and is the one which starts the Celery worker. The other one, which is internally called Celery Beat, executes a Celery instance in \textit{Beat} mode which sends pre-configured Celery tasks to the queue. This is used to run the algorithms periodically in order to process the Client data and generate actionable insights for the Client.
 
 These algorithms require decent amounts of computer resources, namely CPU power and RAM capacity, in order to be able to run effectively. This is a direct contrast to the remaining components of this old architecture, which see minimal Client use and are therefore less resource intensive. In terms of storage, the situation is the opposite since these algorithms use data stored within the other services: the database services.
+
+\input{tex/contents/fig/old-arch-connections.drawio.pdf.tex}
+
+In \Cref{fig:old-arch-connections} we can see the relations between these containers. Starting on the right side, with the  Let's Encrypt and Nginx containers, these provide outside access to the Grafana and SFTP services inside the respective containers. Data from the InfluxDB database is read by the Grafana service which allows the Client's users and the company's developers to query the database and at the same time generate graphs with such information. Client sensor data is sent to the SFTP server that shares the incoming files with the Telegraf service and allows it to pre-process that sensor data and proceed to the data intake into the InfluxDB database. Then, either through remote access to the Web Dev container or automatically through the Worker Beat service, tasks are sent to the celery queue (using the Redis service) and picked up by the Worker service. This Worker service then accesses the MongoDB Database to load algorithm and device configurations and the required client sensor data from the InfluxDB database before running the tasked algorithm. Data resulting from the execution of the algorithms is then sent to the InfluxDB database, to be read by the Grafana service. There are some connections that are bidirectional, such as the Web Dev to the MongoDB database which is the service used to manipulate the MongoDB database's algorithm and device configurations.
 
 \section{Issues}\label{methodology:s:issues}
 
@@ -101,17 +105,24 @@ Besides an individual \gls{ec2} instance, each Client also has an individual Git
     \item \textbf{dbs} (Databases configurations, build files for databases' docker images, deployment scripts)
     \item \textbf{Workers} (Build files for the Workers' docker images)
     \item \textbf{DBconnectors} (Standardized code for database access)
-    \item \textbf{forecast\_.optimization\_.api} (Code and build files for the Web Dev docker image)
+    \item \textbf{forecast\_optimization\_api} (Code and build files for the Web Dev docker image)
     
 \end{itemize}
 
-In the \textbf{dbs} repository, we can find build scripts for custom docker images for InfluxDB, Nginx and Telegraf. Also, here reside the scripts that are used to remotely deploy docker containers to the \gls{ec2} instances as well as the \textit{docker-compose} configuration files.
+In the \textbf{dbs} repository, we can find build scripts for custom docker images for InfluxDB, Nginx and Telegraf. Also, here reside the scripts that are used to remotely deploy docker containers to the \gls{ec2} instances as well as the \textit{docker-compose} configuration files. The GitLab \gls{cicd} pipeline that deploys the old architecture to the instances also resides here.
 
+As for the \textbf{DBconnectors} repository, database connectors can be found. These allow offloading the code that connects to the databases from the algorithms to a separate module, which can be reused throughout the same GitLab Project and, in theory, keep the query methods consistent for both the \textbf{Workers} and \textbf{Web Dev} codebases.
+
+In the \textbf{Workers} repository, we can find the code for the algorithms used by the platform to perform the forecasting, optimization and KPI calculation as well as the \textbf{DBconnectors} repository linked as a submodule.
+
+In the likeness of the \textbf{Workers} repository, the \textbf{forecast\_optimization\_api} repository also imports the \textbf{DBconnectors} repository as a submodule. This \textbf{forecast\_optimization\_api} repository is where the \textit{Web Dev} container build code is situated. 
+
+Astute readers will notice that, as shown both above and on \Cref{fig:old-arch-connections}, that there are multiple services performing read and write operations to the InfluxDB database. Although concurrency is not a major problem, having different schemas and tag names for InfluxDB queries in different services has historically led to multiple timeseries data not being detected when querying the database when the service querying it was not the same that placed the data in the database. This is due to mismanagement of repositories and git submodules, and requires additional care, planning and communication from the developer team's side. Here, having a specific service to perform pre-prepared queries, with very detailed database schemas, to which all other services would connect to query/write to the database would solve this problem.\textcolor{red}{(citation needed)}
 
 
 \subsection{Deployment}\label{methodology:ss:deployment}
 
-When deploying new functionality or code fixes to Client's servers that use the old architecture, this process can quickly become a multi-hour endeavor. Despite being a somewhat modular architecture, given that each service has its own docker container, they are not independent of each other and are dependent on each other when initializing the containers. On some deployment procedures, namely when changing code in the Workers container, it requires updating the Workers' docker image, running GitLab's \gls{cicd} pipelines for this deployment of the Workers' docker image and then tag a completely different repository inside the same Client's GitLab project so that it triggers another \gls{cicd} pipeline which replaces all the containers within the Client's \gls{ec2} instance with the \textit{latest} version of each service's container image.
+When deploying new functionality or code fixes to Client's servers that use the old architecture, this process can quickly become a multi-hour endeavor. Despite being a somewhat modular architecture, given that each service has its own docker container, they are dependent on each other when initializing the containers. On some deployment procedures, namely when changing code in the Workers container, it requires updating the Workers' docker image, running GitLab's \gls{cicd} pipelines for this deployment of the Workers' docker image and then tag a completely different repository —  \textbf{dbs} — inside the same Client's GitLab project so that it triggers another \gls{cicd} pipeline which replaces all the containers within the Client's \gls{ec2} instance with the \textit{latest} version of each service's container image. Although the last step, which replaces the containers is performed rather quickly and the apparent downtime for the Client is minimal, the amount of time for the image building in the \gls{cicd} process is cumbersome, reaching a combined time of 20 to 30 minutes on average. This chaotic and time-consuming process leads to lack of motivation from the development team to introduce new features regularly. This leads to lower Deployment Frequency, increased Lead Time for Change and Time to Restore Service (when a deployment or unexpected bug occurs). Additionally, the complexity and tight-coupling of services leads to increase Change Failure Rate. 
 
 
 
