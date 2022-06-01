@@ -1,8 +1,8 @@
 \chapter{Methodology}\label{methodology}
 
-\section{Requirements}\label{methodology:s:requirements}
+\section{The Old Architecture}\label{methodology:s:the-old-architecture}
 
-\subsection{Current Architecture}\label{methodology:ss:current-architecture}
+\subsection{Old Architecture Components }\label{methodology:ss:current-architecture}
 
 The current software architecture is still in use as of the date of publication of this body of work. This older architecture consists of an amalgamation of Docker containers, each running a different service. Each Client has its own \gls{vps} wherein these Docker containers are deployed. 
 
@@ -123,6 +123,28 @@ Astute readers will notice that, as shown both above and on \Cref{fig:old-arch-c
 \subsection{Deployment}\label{methodology:ss:deployment}
 
 When deploying new functionality or code fixes to Client's servers that use the old architecture, this process can quickly become a multi-hour endeavor. Despite being a somewhat modular architecture, given that each service has its own docker container, they are dependent on each other when initializing the containers. On some deployment procedures, namely when changing code in the Workers container, it requires updating the Workers' docker image, running GitLab's \gls{cicd} pipelines for this deployment of the Workers' docker image and then tag a completely different repository —  \textbf{dbs} — inside the same Client's GitLab project so that it triggers another \gls{cicd} pipeline which replaces all the containers within the Client's \gls{ec2} instance with the \textit{latest} version of each service's container image. Although the last step, which replaces the containers is performed rather quickly and the apparent downtime for the Client is minimal, the amount of time for the image building in the \gls{cicd} process is cumbersome, reaching a combined time of 20 to 30 minutes on average. This chaotic and time-consuming process leads to lack of motivation from the development team to introduce new features regularly. This leads to lower Deployment Frequency, increased Lead Time for Change and Time to Restore Service (when a deployment or unexpected bug occurs). Additionally, the complexity and tight-coupling of services leads to increase Change Failure Rate. 
+
+\section{Requirements}\label{methodology:s:requirements}
+
+``The primary measure of success of a software system is the
+degree to which it meets the purpose for which it was
+intended''
+
+
+\section{Planning the Architecture Migration}\label{methodology:s:planning-the-architecture-migration}
+
+Changing from the old architecture to the new one isn't a straightforward process. Having clients who are still using the infrastructure upon which the old architecture relies doesn't allow for mistakes while doing the migration. This would bring several challenges, which were compounded by the lack of a functional new web interface for the new architecture. For this migration to occur, careful planning had to be done and checked by the \textit{stakeholders} before any changes were put into production. Measures such as changing network configurations, restarting services or run benchmarks on the old infrastructure could not affect any Clients using the old infrastructure.
+
+\subsection{Changing a car's wheel while driving}\label{methodology:s:changing-a-cars-wheel-while-driving}
+To further complicate the planned migration, during the planning and implementation phase of this project the \textit{stakeholders} required multiple changes to accommodate new Clients, which had to be applied to the new architecture. These changes and late-requests shaped the decisions taken during the planning and implementation phase of the migration. For one of the new Clients, that the \textit{stakeholders} arranged while the migration was concurring, there was a dilemma: Further increase the number of Clients using the old architecture (and subsequently, old infrastructure) or risk having this new Client as test subject for the new architecture? After discussion with the \textit{stakeholders}, the development efforts were shifted from all current project to implementing the new architecture and adapting the algorithms to make use of this new architecture and 
+
+
+
+\section{Implementing the Architecture}\label{methodology:s:implementing-the-architecture}
+\subsection{Backend API}\label{methodology:ss:backendapi}
+\subsection{Serverless}\label{methodology:ss:serverless}
+
+
 
 
 
