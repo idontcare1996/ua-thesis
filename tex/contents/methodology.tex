@@ -1,5 +1,9 @@
 \chapter{Methodology}\label{methodology}
 
+\section{\textit{Stakeholders}}\label{methodology:s:stakeholders}
+
+The first step when handling a Software Engineering problem is to identify the key \textit{stakeholders}. For this project, the key stakeholders are all the people involved in the company and the Clients' project managers. In the company, SCUBIC, the teams are divided into the development team, the executive team and the operations team, where their members are part of one or more of them.
+
 \section{The Old Architecture}\label{methodology:s:the-old-architecture}
 
 \subsection{Old Architecture Components }\label{methodology:ss:current-architecture}
@@ -119,10 +123,29 @@ In the likeness of the \textbf{Workers} repository, the \textbf{forecast\_optimi
 
 Astute readers will notice that, as shown both above and on \Cref{fig:old-arch-connections}, that there are multiple services performing read and write operations to the InfluxDB database. Although concurrency is not a major problem, having different schemas and tag names for InfluxDB queries in different services has historically led to multiple timeseries data not being detected when querying the database when the service querying it was not the same that placed the data in the database. This is due to mismanagement of repositories and git submodules, and requires additional care, planning and communication from the developer team's side. Here, having a specific service to perform pre-prepared queries, with very detailed database schemas, to which all other services would connect to query/write to the database would solve this problem.\textcolor{red}{(citation needed)}
 
+\subsection{Observability}\label{methodology:ss:observability}
+
+One of the issues with the old architecture was the lower Observability(citation needed) that it provided to the Maintainers. Despite having extensive logging for each one of the services, the other two key components of Observability - metrics and tracing - were not present at any meaningful scale. Having to peruse hundreds of lines of code, filtering different services and log levels just to manually create metrics for algorithm execution time was time-consuming and tiresome. There was also no tracing put into place anywhere in the platform. To combat this, it was stipulated by the \textit{stakeholders} that the new architecture should contemplate measures to increase observability of the entire system.
+
+\subsubsection{Alerts}\label{methodology:sss:alerts}
+A consequence of the old architecture's lack of system observability, there were no useful metrics being created and store besides the ones pertaining to the algorithm result. Metrics are required in order to, having a set of thresholds for each one of them, produce alarms. Alarms automatically inform the Maintainers and \textit{stakeholders} of unexpected system behavior or catastrophic system failure in a timely manner, giving the chance for the development team to trace the cause(s) of the problem(s) before they become apparent and/or disruptive to the Clients. For some Clients, there were metrics and alarms setup based on the Tank's water level that would send messages to a Slack channel shared between the company and the respective Client, but fell into disuse.
+
+
 
 \subsection{Deployment}\label{methodology:ss:deployment}
 
 When deploying new functionality or code fixes to Client's servers that use the old architecture, this process can quickly become a multi-hour endeavor. Despite being a somewhat modular architecture, given that each service has its own docker container, they are dependent on each other when initializing the containers. On some deployment procedures, namely when changing code in the Workers container, it requires updating the Workers' docker image, running GitLab's \gls{cicd} pipelines for this deployment of the Workers' docker image and then tag a completely different repository —  \textbf{dbs} — inside the same Client's GitLab project so that it triggers another \gls{cicd} pipeline which replaces all the containers within the Client's \gls{ec2} instance with the \textit{latest} version of each service's container image. Although the last step, which replaces the containers is performed rather quickly and the apparent downtime for the Client is minimal, the amount of time for the image building in the \gls{cicd} process is cumbersome, reaching a combined time of 20 to 30 minutes on average. This chaotic and time-consuming process leads to lack of motivation from the development team to introduce new features regularly. This leads to lower Deployment Frequency, increased Lead Time for Change and Time to Restore Service (when a deployment or unexpected bug occurs). Additionally, the complexity and tight-coupling of services leads to increase Change Failure Rate. 
+
+\subsubsection{Singular Environment}\label{methodology:sss:singular-environment}
+
+One of the faults with the older architecture was the lack of different environments for deployment. Such fact meant that every deployment made to each Client had the very real possibility of breaking Production for that particular Client, where the faults would impact the Client's usage of the platform directly. This was a recurring event when deploying, as the algorithms are quite complex. Given the fact that some algorithms use real-time data gathered from the last one hundred (100) days, the somewhat unpredictable nature of the algorithms' execution results made the repeatability of results from day to day not trivial.
+Breaking changes were also not always apparent, since some algorithms performed calculations using data generated by other algorithms and/or real-time data and such mistakes only became apparent on the following work day, after their execution. There were cases when the algorithms ran perfectly during week days, but failed during the weekends (since the water consumption patterns change accordingly).
+
+All of these mishaps lead to the creation of a staging server where changes to the platform or algorithms could be tested with real data, causing no impact to the Clients and allowing for results to be monitored for longer periods of time to ascertain system reliability. As such, a staging environment should replicate as much as possible the production environment, be it the Operating System version, it's installed packages, Python versions, python packages, the data in the server, the quick-fixes applied to production, etc.
+This, however, meant that a similar, staging environment \gls{ec2} instance needed to be running simultaneously with the production environment's \gls{ec2} instance, effectively doubling the infrastructure costs. Since each Client had its own \gls{ec2} instance, this approach would also be impossible to maintain. An attempted approach was to use a single \gls{ec2} machine, sized similarly to the highest performing \gls{ec2} machine used by one of the Clients, to act as a staging server for each Client at a time. Each time a major change was to be deployed to a Client, it would be first deployed during a set time to this staging server and upon success, be deployed to the Client's production server. Having multiple developers perform different deployments, for different Clients, at the same time, meant that Deployment Frequency lowered and Lead Time for Change increased as well.
+
+
+
 
 \section{Requirements}\label{methodology:s:requirements}
 
@@ -143,7 +166,6 @@ To further complicate the planned migration, during the planning and implementat
 \section{Implementing the Architecture}\label{methodology:s:implementing-the-architecture}
 \subsection{Backend API}\label{methodology:ss:backendapi}
 \subsection{Serverless}\label{methodology:ss:serverless}
-
 
 
 
