@@ -1,36 +1,31 @@
-\chapter{Introduction}
-\label{intro}
-
-\textit{This chapter presents the overall theme of this body of work. Firstly, some context is given about the overall theme of this body of work and the motivation behind it. Then, the objectives for dissertation are presented to the reader. Finally, at the end of the chapter, some information regarding the content of each chapter is presented.}
+\chapter{Introduction}\label{intro}
 
 
-\section{Water Supply Systems}
-\label{intro:s:water-supply-systems}
 
-The water supply systems that are prevalent in our society play a very important role in our daily lives, distributing water throughout the country from water reservoirs or water treatment plants up until it reaches our houses and industries. These \gls{wss} can be quite complex and difficult to manage without proper processes that ensure the operation of such networks is made without problems, in an environmental and economically sustainable way. For this reason, the use of specialized software to aid operators or even automatically control the operation of these \gls{wss} is of uttermost importance nowadays. Water, be it in quantity and quality, has been a staple of all major human civilizations throughout History, from ancient roman aqueducts to the current era. 
 
-Moving large quantities of water through enormous \gls{wss} requires the use of vast quantities of mechanical work, which in turn requires lots of energy, namely, electric energy. With the ever-growing political, economic and environmental pressure to improve and optimize how we use energy, and with the current geopolitical issues, access to energy is getting more expensive and regulated. This means that the need for the optimization of pumping operations to reduce costs and, potentially lower energy use as well, is growing within \gls{wu}.
+\section{Water Supply Systems}\label{intro:s:water-supply-systems}
 
-\section{Existing Decision Support System}
-\label{intro:s:existing-decision-support-system}
+The water supply systems that are prevalent in modern society play a very important role in daily life, distributing water throughout the country from water reservoirs or water treatment plants to the citizen's houses and industries. These \gls{wss} can be quite complex and difficult to manage without proper processes that ensure the efficient operation of such networks including its environmental and economical sustainability. For this reason nowadays, the use of specialized software to aid operators or even automatically control the operation of these \gls{wss} is of uttermost importance. It must be highlighted that water has been a staple of all major human civilizations throughout History, from ancient roman aqueducts to the current era.
 
-In order for the \gls{wu}'s to optimally operate their water pumps, a \gls{dss} is used by the \gls{wu}'s pump operators and/or by automatic \gls{scada} systems. This \gls{dss} is a web platform designed to suggest \textit{which} pumps to operate, \textit{when} to operate, for \textit{how} long to operate and in some cases what \textit{speed} their \gls{vsd}'s should operate at like shown in \Cref{fig:sanepar-example-01}
+Moving large quantities of water through large \gls{wss} requires the use of large quantities of mechanical work, which in turn requires high levels of electric energy. With the ever-growing political, economic and environmental pressure to improve and optimize the use of energy, and with the current geopolitical issues, the access to energy is getting more expensive and regulated. This means that the need for the optimization of pumping operations to reduce costs and, potentially reduce the energy use as well, is growing within \gls{wu}.
+
+\section{Existing Decision Support System}\label{intro:s:existing-decision-support-system}
+
+In order to the \gls{wu}'s optimally operate their water pumps, a \gls{dss} is used by the \gls{wu}'s pump operators and/or by automatic \gls{scada} systems. Generally, this \gls{dss} is a web platform designed to suggest \textit{which} pumps to operate, \textit{when} to operate, for \textit{how} long to operate and in some cases what \textit{speed} their \gls{vsd}'s should operate, as shown in \Cref{fig:sanepar-example-01}
 \input{tex/contents/fig/sanepar-example-01.tex}
-The existing software’s architecture can be summarized as a “Monolithic Modular” software architecture \parencite{newman2019monolith}. This architecture is composed of a set of \gls{vps}, one for each Client, where a set of Docker containers contain (containers contain?) all the services needed for running the software for that Client. These services are also configured and developed separately, each in a different code repository and as such there is an unsurmountable amount of code drift between the same services of the different clients. This is, quite apparently, not scalable nor even remotely manageable for any software development team. Further ahead, on \Cref{methodology:ss:current-architecture}, a complete analysis of this architecture will be provided and explained in detail.
+The existing software’s architecture can be summarized as a “Monolithic Modular” software architecture \parencite{newman2019monolith}. This architecture is composed of a set of \gls{vps}, one for each Client, where a set of Docker containers enclose all the services needed for running the software for that Client. These services are also configured and developed separately, each in a different code repository. This fact results in an unsurmountable amount of \textit{code drift} between the same services of the different clients. \textit{Code drift} happens when, despite being based on the same code, the codebases for each Client follow different paths during software development. When there is a need to implement a new feature or fix a bug common to both codebases, these differences increase the amount of work. Apparently, this structure is not even remotely manageable for any software development team. On \Cref{methodology:ss:current-architecture}, a complete analysis of this architecture is provided and explained in detail.
 
-\section{Objectives}
-\label{intro:s:objectives}
+\section{Objectives}\label{intro:s:objectives}
 
-The main goal of this work is to make the migration from the old software architecture of the \gls{dss} to a better, improved software, considering the requirements from the stakeholders.
-This new architecture hopes to improve the performance, reliability, resilience, security and scalability of the old \gls{dss} Architecture. A new, better architecture software brings improvements not just for the software itself but also for the development team, allowing them to improve and maintain the software easier and faster than ever before. By reducing the amount of work and time the software development team spends on each maintenance action or new functionality, it’s also hoped to save monetary resources to the software company as well. Infrastructure costs are also an important aspect of this new architecture, where the adoption of more modular and independent services might mean a more optimal use of compute resources, resulting in lowering such costs.
+The main goal of this work is to make the migration from the old software architecture of the \gls{dss} to a more efficient, improved software, considering the requirements from the \textit{stakeholders}.
+This new architecture improves the performance, reliability, resilience, security and scalability in comparison to the old \gls{dss} Architecture. The new architecture software brings improvements not just for the software itself but also for the development team, allowing them to improve and maintain the software easier and faster than ever before. By reducing the amount of work and time the software development team spends on each maintenance action or new functionality, it reduces cost to the software company as well. Infrastructure costs are also an important aspect of this new architecture, where the adoption of more modular and independent services means a more optimal use of compute resources, resulting in lowering such costs.
 
 
-\section{Structure of the Document}
-\label{intro:s:structure-of-the-document}
+\section{Structure of the Document}\label{intro:s:structure-of-the-document}
 
 This document is composed by a total of X chapters.
 
-In \Cref{intro}, the reader is presented with a summary of the work to be done as well as the context behind such decision.
+In \Cref{intro}, the chapter presents the overall theme of this body of work. Firstly, some context is given about the overall theme of this body of work and the motivation behind it. Then, the objectives for dissertation are presented to the reader. Finally, at the end of the chapter, some information regarding the content of each chapter is presented.
 
 In \Cref{state-of-the-art}, a bibliographical analysis regarding the state of software architecture and cloud-based software solutions is presented. It’s divided in two sections, starting with some insight into how a Software Architecture is planned, executed and then analyzed. Some text regarding the general technologies used throughout the work is also analyzed here.
 
