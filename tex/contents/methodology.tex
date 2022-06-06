@@ -10,11 +10,13 @@ The first step when handling a Software Engineering problem is to identify the k
 
 The current software architecture is still in use as of the date of publication of this body of work. This older architecture consists of an amalgamation of Docker containers, each running a different service. Each Client has its own \gls{vps} wherein these Docker containers are deployed. 
 
+\input{tex/contents/fig/old-arch-overview.drawio.pdf.tex}
 \subsubsection{\gls{vpc}}\label{methodology:sss:vpc}
 
 These \gls{vps} are general-purpose \gls{aws} \gls{ec2} \textit{Instances}. As can be seen on the diagram presented on \Cref{fig:old-arch-overview}, these instances are deployed to the same \gls{vpc}, sharing a private network between them. The Reverse Proxy serves as, as the name implies, as a reverse proxy to enable the use of a single \gls{eip}, a single \gls{eni} by all Clients's servers, since the availability of public IPs is limited to five \gls{eip}.
-\input{tex/contents/fig/old-arch-overview.drawio.pdf.tex}
 
+
+\input{tex/contents/fig/old-arch.drawio.pdf.tex}
 
 Each \gls{ec2} instance runs a Docker container for each one of the following services:
 
@@ -33,8 +35,9 @@ Each \gls{ec2} instance runs a Docker container for each one of the following se
 \item \textbf{Workers} (\textit{Beat}) (Container that periodically \textit{triggers} jobs in the Workers container)
 
 \end{itemize}
+\input{tex/contents/fig/old-arch-connections.drawio.pdf.tex}
 
-\input{tex/contents/fig/old-arch.drawio.pdf.tex}
+
 
 
 \subsubsection{Databases}\label{methodology:sss:databases}
@@ -72,27 +75,29 @@ Based on Flask \parencite{pallets_2022}, this web application serves an \gls{api
 
 \subsubsection{Workers}\label{methodology:sss:workers}
 
-This is where the \textit{magic} happens. The Workers' container image is built \textit{in-house} by the development team, using a \textit{Python} Docker image as the base image, wherein all the company's algorithms lay. The \textit{forecast}, \textit{optimization} and \textit{performance analysis}/\gls{kpi} algorithms are individually linked in a Celery configuration file, which defines how each algorithm is executed in a Celery task and how that task is called. This container executes a Celery Worker that executes all Celery Tasks in the Celery task queue.
+The Workers' container image is built \textit{in-house} by the development team, using a \textit{Python} Docker image as the base image, wherein all the company's algorithms lay. The \textit{forecast}, \textit{optimization} and \textit{performance analysis}/\gls{kpi} algorithms are individually linked in a Celery configuration file, which defines how each algorithm is executed in a Celery task and how that task is called. This container executes a Celery Worker that executes all Celery Tasks in the Celery task queue.
 
 When a task is sent to the task queue, this Celery Worker who polls the task queue, picks the task up and starts executing the task as soon as possible.
 
-There are two Workers images, the first one contains the code for all algorithms and is the one which starts the Celery worker. The other one, which is internally called Celery Beat, executes a Celery instance in \textit{Beat} mode which sends pre-configured Celery tasks to the queue. This is used to run the algorithms periodically in order to process the Client data and generate actionable insights for the Client.
+There are two Workers images, the first one contains the code for all algorithms and it is the one which starts the Celery worker. The other one, which is internally called Celery Beat, executes a Celery instance in \textit{Beat} mode which sends pre-configured Celery tasks to the queue. This is used to run the algorithms periodically in order to process the Client data and generate actionable insights for the Client.
 
 These algorithms require decent amounts of computer resources, namely CPU power and RAM capacity, in order to be able to run effectively. This is a direct contrast to the remaining components of this old architecture, which see minimal Client use and are therefore less resource intensive. In terms of storage, the situation is the opposite since these algorithms use data stored within the other services: the database services.
 
-\input{tex/contents/fig/old-arch-connections.drawio.pdf.tex}
 
-In \Cref{fig:old-arch-connections} we can see the relations between these containers. Starting on the right side, with the  Let's Encrypt and Nginx containers, these provide outside access to the Grafana and SFTP services inside the respective containers. Data from the InfluxDB database is read by the Grafana service which allows the Client's users and the company's developers to query the database and at the same time generate graphs with such information. Client sensor data is sent to the SFTP server that shares the incoming files with the Telegraf service and allows it to pre-process that sensor data and proceed to the data intake into the InfluxDB database. Then, either through remote access to the Web Dev container or automatically through the Worker Beat service, tasks are sent to the celery queue (using the Redis service) and picked up by the Worker service. This Worker service then accesses the MongoDB Database to load algorithm and device configurations and the required client sensor data from the InfluxDB database before running the tasked algorithm. Data resulting from the execution of the algorithms is then sent to the InfluxDB database, to be read by the Grafana service. There are some connections that are bidirectional, such as the Web Dev to the MongoDB database which is the service used to manipulate the MongoDB database's algorithm and device configurations.
+
+In \Cref{fig:old-arch-connections} the relations between these containers can be (subsequently?) seen. Starting on the right side, with the  Let's Encrypt and Nginx containers, these provide outside access to the Grafana and SFTP services inside the respective containers. Data from the InfluxDB database is read by the Grafana service which allows the Client's users and the company's developers to query the database and at the same time generate charts with such information. Client sensor data is sent to the SFTP server that shares the incoming files with the Telegraf service and allows it to pre-process that sensor data and proceed to the data intake into the InfluxDB database. Then, either through remote access to the Web Dev container or automatically through the Worker Beat service, tasks are sent to the celery queue (using the Redis service) and picked up by the Worker service. This Worker service then accesses the MongoDB Database to load algorithm and device configurations and the required client sensor data from the InfluxDB database before running the tasked algorithm. Data resulting from the execution of the algorithms is then sent to the InfluxDB database, to be read by the Grafana service. There are some connections that are bidirectional, such as the Web Dev to the MongoDB database which is the service used to manipulate the MongoDB database's algorithm and device configurations.
 
 \section{Issues}\label{methodology:s:issues}
 
 \subsection{Resource Sizing}\label{methodology:ss:resource sizing}
 
+
+
+The contrast between the different services' computational and storage requirements is one of the major issues of the old architecture. Adequate instance sizing is essential to lower infrastructure costs with compute resources. As can be seen in \Cref{fig:caesb-cpu-usage}, the CPU average utilization is usually very low, indicating that the resources allocated to this instance are way overestimated, elevating the infrastructure costs for no reason. However, the peaks in CPU usage that can be observed in this same Figure, which are caused by the periodically-running algorithms, push this CPU usage up to levels that suggest the allocated resources are somewhat adequate for this use-case. And wherein lies one of the major issues: over a 24-hour period, the amount of time spent with very low CPU usage is visibly and significantly superior to the time spent with adequate CPU usage for the instance size. 
+
 \input{tex/contents/fig/caesb-cpu-usage.tex}
 
-The contrast between the different services' computational and storage requirements is one of the major issues with the old architecture. Adequate instance sizing is essential to lower infrastructure costs with compute resources. As can be seen in \Cref{fig:caesb-cpu-usage}, the CPU average utilization is usually very low, indicating that the resources allocated to this instance are way overestimated, elevating the infrastructure costs for no reason. However, the peaks in CPU usage that can be observed in this same Figure, which are caused by the periodically-running algorithms, push this CPU usage up to levels that suggest the allocated resources are somewhat adequate for this use-case. And wherein lies one of the major issues: over a 24-hour period, the amount of time spent with very low CPU usage is visibly and significantly superior to the time spent with adequate CPU usage for the instance size. 
-
-The \gls{ec2} instance upon which these services reside can be provisioned and sized to different computational and storage needs. However, this would mean that it would either be adequately sized for the times the workers are dormant and undersized for when the algorithms are running, or oversized for most of the time and only adequately sized while running said algorithms. Unfortunately, resizing an \gls{ec2} instance requires downtime for the whole platform, since it requires the \gls{ec2} instance to be rebooted. Since this would also stop Client access to the \gls{dss} and data intake service, this option cannot be contemplated. After testing a platform implementation with an instance adequately sized for when the workers are dormant, the development team came to the conclusion that the algorithms would either refuse to run or crash when performing resource intensive calculations due to low RAM availability. The decision was then made, to keep the platform running in oversized, and costly, \gls{ec2} instances.
+The \gls{ec2} instance upon which these services reside can be provisioned and sized to different computational and storage needs. However, this would mean that it would either be adequately sized for the times the workers are dormant and undersized for when the worker's algorithms are running, or oversized for most of the time and only adequately sized while running said algorithms. Unfortunately, resizing an \gls{ec2} instance requires downtime for the whole platform, since it requires the \gls{ec2} instance to be rebooted. Since this would also stop Client access to the \gls{dss} and data intake service, this option cannot be contemplated. After testing a platform implementation with an instance adequately sized for the instants when workers are dormant, it was concluded that the algorithms would either refuse to run or crash when performing resource intensive calculations due to low RAM availability. The decision was then made, to keep the platform running in oversized, and costly, \gls{ec2} instances.
 
 Therefore, one of the goals of this work is to attempt to solve this problem. One of the possible general solutions was to split the resources based on their compute resource requirements. Having the workers on a separate \gls{ec2} instance that would be automatically and periodically provisioned and unprovisioned according to a schedule would allow the remaining services to be placed in a lower cost \gls{ec2} instance, lowering the overall infrastructure costs. However, without altering the existing architecture, this would mean that the alteration would only be the place where the Workers' docker container would be executed. Since the amount of \gls{ec2} instances is directly proportional to the amount of Clients, having two instances would duplicate the computational resources, networks connections and storage space needed to maintain the platform for all Clients. This would exacerbate the problem of limited compute resources available to our \gls{aws} account.
 
