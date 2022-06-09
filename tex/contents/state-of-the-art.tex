@@ -6,15 +6,32 @@ Cloud Computing is a robust and scalable dynamic platform where configurable com
 It can also be understood, as the U.S. \gls{nist} indicates as:
 \textit{Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction} \Parencite{mell_grance_2011}. 
 
-Incorrectly used as a synonym of on-demand computing, grid computing or even \gls{saas} \Parencite{kim_2009}, Cloud Computing has become prevalent nowadays in academic, household and business environments, from small business to large enterprises \parencite{rezaei_chiew_lee_shams_aliee_2014}.
+Incorrectly used as a synonym of on-demand computing, grid computing or even \gls{saas} \Parencite{kim_2009}, Cloud Computing has become prevalent nowadays in academic, household and business environments, from small business to large enterprises \parencite{rezaei_chiew_lee_shams_aliee_2014} with multiple deployment models:
+
+\subsection{Deployment models for cloud computing}\label{state-of-the-art:ss:deployment-models-for-cloud-computing}
+
+\subsubsection{Private Cloud}\label{state-of-the-art:sss:private-cloud}
+A Private Cloud is managed by a single entity, within a single organization. The uses for Private Cloud can be for data privacy reasons, academic reasons, testing reasons or even to utilize existing in-house resources of an organization. This deployment model has the advantage of also allowing local data transfers, which are usually paid for when using other deployment models.
+
+\subsubsection{Community Cloud}\label{state-of-the-art:sss:community-cloud}
+A Community Cloud is a Private Cloud where several organizations democratically manage, construct, maintain and share the same cloud infrastructure. This allows for a more economically stable experience.
+
+\subsubsection{Public Cloud}\label{state-of-the-art:sss:public-cloud}
+In the Public Cloud, the dominant form of Cloud Computing \Parencite{dillon_tharam_and_wu_chen_and_chang_elizabeth}, the users are the general public and the owner and maintainer of the underlying infrastructure and services is the cloud service provider. With this cloud, users are provided access to cloud computing services and don't have to worry about the infrastructure.
+
+\subsubsection{Virtual Private Cloud}\label{state-of-the-art:sss:virtual-private-cloud}
+A newer type of cloud deployment model has emerged in the last decade where users can experience a mixture of Public and Private Cloud. A \gls{vpc} enables users to manage virtual infrastructure on top of public infrastructure. Cloud providers such as Amazon, Google and Microsoft are the main providers of these \gls{vpc}s \Parencite{aljamal_el-mousa_jubair_2018}, where users can stipulate the amount and configuration of resources like they were in a Private Cloud, ensuring low to non-existent data transfer limits and cost, more privacy and personalized cloud experiences, while relying on the service provider's public cloud infrastructure.
+
+\subsubsection{Hybrid Cloud}\label{state-of-the-art:sss:hybrid-cloud} 
+This deployment model is a combination of one or more of the previous deployment models, where data transfer or task handling can ocour seamlessly between the different clouds.
+
+\section{Software-as-a-Service}\label{state-of-the-art:s:software-as-a-service}
 
 Nowadays, with the proliferation of faster Internet connections and the ever-growing landscape of Cloud Computing
 \Parencite{dillon_tharam_and_wu_chen_and_chang_elizabeth}, software has become more accessible to companies than before.
 By hosting and serving software through the use of Cloud Computing, that software's clients reduce both \gls{capex} and \gls{opex} by eliminating the need to buy and maintain the software and underlying infrastructure \Parencite{alnumay_2020}.
 
-\section{Software-as-a-Service}\label{state-of-the-art:s:software-as-a-service}
-
-\gls{saas} allows users to access software and its data, usually hosted on cloud computing services, through thin clients and/or web browsers \Parencite{mell_grance_2011}\parencite{Ali_Abdulrazzaq_and_Md_Sultan_Abu_Bakar_and_abdul_ghani_Abdul_azim_and_Zulzalil_Hazura}. The \textit{Multi-tenancy} design structure of \gls{saas} enables the software to serve multiple users (tenants), from a central server. This design allows for more efficient use of both computer resources and the human resources needed to maintain and manage them, which lowers expenditures and is therefore an imperative for businesses. Through the use of \gls{saas} instead of traditional software, the Clients no longer require the arduous task of deploying software to each one of the users, no longer dealing with varied user endpoint hardware configurations.
+\gls{saas} allows users to access software and its data, usually hosted on cloud computing services, through thin clients and/or web browsers \Parencites{mell_grance_2011}{Ali_Abdulrazzaq_and_Md_Sultan_Abu_Bakar_and_abdul_ghani_Abdul_azim_and_Zulzalil_Hazura}. The \textit{Multi-tenancy} design structure of \gls{saas} enables the software to serve multiple users (tenants), from a central server. This design allows for more efficient use of both computer resources and the human resources needed to maintain and manage them, which lowers expenditures and is therefore an imperative for businesses. Through the use of \gls{saas} instead of traditional software, the Clients no longer require the arduous task of deploying software to each one of the users, no longer dealing with varied user endpoint hardware configurations.
 Cloud Computing enables ubiquitous access to \gls{saas}, which in turn makes its adoption by businesses more enticing to them. The use of \gls{saas} allows not only for lower \gls{capex} and \gls{opex} for the Client, but also enables faster and more frequent updates of the \gls{saas} (since the software manufacturer has control over it), which increases safety and security for the Client's day-to-day operations \Parencite{cavusoglu_cavusoglu_zhang_2008}. 
 
 \subsection{Security}\label{state-of-the-art:ss:security}
@@ -22,6 +39,21 @@ Cloud Computing enables ubiquitous access to \gls{saas}, which in turn makes its
 There have been multiple occasions where security breaches could be prevented had the victims been using up-to-date software \Parencite{glenn_2018}. The amount of time and resources needed for patching security vulnerabilities varies from company to company but overall, can reach averages of 38 days \Parencite{rapid7_2018}. By relying on the \gls{saas} provider to patch vulnerabilities in a timely manner, Clients no longer need to allocate costly human resources to this task, which lowers expenses and human error \Parencite{glenn_2018}. 
 
 The use of a \gls{saas} solution enables the users to access the software and its data without the use of complex networking such as \gls{vpn} and locked-down user endpoints, which have shown its faults when not properly managed, during the SARS-CoV-2 pandemic \Parencite{adams_al_shahery_chmiel_cunliffe_day_fay_gardner_giuliani_goddard_karl_2022}. By moving the majority of the responsibility for the system's security to the \gls{saas} provider who are more likely to employ security best-practices, it eliminates security threats posed by the Client's deficient security measures.
+
+\section{Observability}\label{state-of-the-art:s:observability}
+
+Virtual Cloud Computing allows users to configure near limitless services, spanning multiple types of resources and with a dynamic range of options for infrastructure. As such, software that relies on \gls{vps}'s elasticity can also become more complex than when using private clouds. With the adoption of modular software design and the increase in the use of micro-services and \textit{serverless} compute services, the complexity of software architecture has increased greatly \Parencite{niedermaier_koetter_freymann_wagner_2019}.
+Such complexity comes at a cost however: Lower Observability. Taking a page from modern control system theory \Parencite{gopal1993modern}, Observability refers to \textit{the degree to which a system's internal state can be determined from its output}. 
+The ability to closely monitor a system's internal state is beneficial during software deployments as well as after them, as it will allow stating whether the system is and continues to be running according to plan.
+While a few services can be easily monitored by a single human resource inside a company, complex systems require huge efforts to keep in check on a regular basis. 
+Erratic or unexpected system behavior can be spotted when certain patterns make themselves apparent through monitoring. These patterns become difficult to spot when the amount of monitored metrics are inadequate for the system's complexity.
+As a means to increase transparency in these new distributed and complex systems, observability tools have emerged that allow for \textit{traces}, \textit{metrics} and \textit{logs} to be generated, collected and further analyzed so that insightful information towards the system's internal state can be attested.
+
+\subsection{OpenTelemetry}\label{state-of-the-art:ss:opentelemetry}
+
+An open-source project, \gls{otel} is a framework born from the software industry's interest on open-source tools, \gls{sdk} and \gls{api} for 
+
+
 
 
 \section{Software Engineering}\label{state-of-the-art:s:software-engineering}
