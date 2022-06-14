@@ -150,8 +150,6 @@ All of these mishaps lead to the creation of a staging server where changes to t
 This, however, meant that a similar, staging environment \gls{ec2} instance needed to be running simultaneously with the production environment's \gls{ec2} instance, effectively doubling the infrastructure costs. Since each Client had its own \gls{ec2} instance, this approach would also be impossible to maintain. An attempted approach was to use a single \gls{ec2} machine, sized similarly to the highest performing \gls{ec2} machine used by one of the Clients, to act as a staging server for each Client at a time. Each time a major change was to be deployed to a Client, it would be first deployed during a set time to this staging server and upon success, be deployed to the Client's production server. Having multiple developers perform different deployments, for different Clients, at the same time, meant that Deployment Frequency lowered and Lead Time for Change increased as well.
 
 
-
-
 \section{Requirements}\label{methodology:s:requirements}
 
 ``The primary measure of success of a software system is the
@@ -167,8 +165,20 @@ Changing from the old architecture to the new one isn't a straightforward proces
 To further complicate the planned migration, during the planning and implementation phase of this project the \textit{stakeholders} required multiple changes to accommodate new Clients, which had to be applied to the new architecture. These changes and late-requests shaped the decisions taken during the planning and implementation phase of the migration. For one of the new Clients, that the \textit{stakeholders} arranged while the migration was concurring, there was a dilemma: Further increase the number of Clients using the old architecture (and subsequently, old infrastructure) or risk having this new Client as test subject for the new architecture? After discussion with the \textit{stakeholders}, the development efforts were shifted from all current project to implementing the new architecture and adapting the algorithms to make use of this new architecture and 
 
 
+\subsection{New Architecture}\label{methodology:ss:new_architecture}
+
+Based on the recently elicited requirements and the issues with the old architecture, a generic plan for the new architecture could be defined as follows.
+
+\input{tex/contents/fig/new-arch-basic.drawio.pdf.tex}
+
+
 
 \section{Implementing the Architecture}\label{methodology:s:implementing-the-architecture}
+
+The first element of the new architecture to be researched and produced was the Backend \gls{api}. A new \gls{api} solves the problem that existed with having different methods to read and write to the databases. Using this Backend \gls{api}, each service that requires access to the database is therefore required to have authorization to access the Backend \gls{api}, which in turn reinforces security regarding database access. Having a standardized method to access the databases also allows for easier debugging, since every service uses the same\gls{api}interfaces, which can help rule out databases and the Backend\gls{api}from possible fault causes.
+
+The old architecture had a Flask \gls{api} that served a webservice through which developers could manually tweak optimization and forecasting settings and issue tasks. This api, however, had no security features nor any authentication in place, with its access limited only through network settings, where each developer had to manually establish an \gls{ssh} tunnel to the Client's \gls{ec2} machine in order to access said api. Due to time constraints and limited knowledge inside the company regarding securing a Flask api, research had to be performed in order to determine the best course of action regarding the choice of web framework for a Backend API.
+
 \subsection{Backend API}\label{methodology:ss:backendapi}
 \subsection{Serverless}\label{methodology:ss:serverless}
 
