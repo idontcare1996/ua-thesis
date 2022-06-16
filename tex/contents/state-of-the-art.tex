@@ -74,7 +74,29 @@ Before requirements elicitation, one of the most important steps is asking from 
 
 \section{Software Architecture}\label{state-of-the-art:s:software-architecture}
 
-Designing the overall system structure, how the software systems integrate with the infrastructure, how these systems interact with each other and with the users is a considerable challenge for large, complex software systems. Defining the software system, in terms of components and connections between these, is describing the system's software architecture \Parencite{hasselbring2018software}. Starting from the elicited requirements, and before putting into action the development of the software's code, the next step in software engineering is \textit{Transforming the software requirements into design}.  
+Designing the overall system structure, how the software systems integrate with the infrastructure, how these systems interact with each other and with the users is a considerable challenge for large, complex software systems. Defining the software system, in terms of components and connections between these, is describing the system's software architecture \Parencite{hasselbring2018software}. Starting from the elicited requirements, and before putting into action the development of the software's code, the next step in software engineering is \textit{Transforming the software requirements into design}. This step allows for easier iteration, since it's a design phase of the software development process, and thus can be modified in a easier and quicker way than performing those changes in an already implemented design.
+By producing documentation regarding the software architecture, someone unfamiliar with the whole project can be quickly introduced to the overall structure of the project, without needing to delve deep into the codebase.
+
+\subsection{Modularity}\label{state-of-the-art:ss:modularity}
+
+Since the early years of software development, there existed the concept of dividing software into modules to improve its comprehensibility and flexibility, while carefully decomposing software in order not to generate too many inefficiencies with this approach \Parencite{parnas_1972}. Not only are \textit{comprehensibility} and \textit{flexibility} good qualities for the software to possess, but also \textit{dependability} and \textit{maintainability}. These qualities derive from proper software architecture design and implementation and must be contemplated in this phase of software development, as they are too integral to the core software design to be thought of during the software implementation phase.
+
+\subsection{Reusing Software Components}
+
+By using modular software architectures, the modular software components are no longer required to be built by the same development team nor being built specifically for a single project. 
+Code reuse is a common practice nowadays and, similarly, reusing whole software components in a software architecture introduces the same advantages, by reducing work to be done in order to create a new architecture and implement it and easier and more cost-effective maintenance \Parencite{hasselbring2018software}. Additionally, it increases system stability, security and reliability when reusing components that have been publicly published and evaluated by the software development community. However, when dealing with 3rd-party components, additional care must be taken to ensure that the evaluation of that software is done on a constant basis and that any changes to that component only reflect on the system after thorough review of said changes. Otherwise, external actors may introduce malicious code in the component before publication and compromise the security of those who rely on that component \Parencite{tal_2022}.
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Code Deployment}\label{state-of-the-art:s:code-deployment}
 
