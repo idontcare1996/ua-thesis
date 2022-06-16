@@ -6,6 +6,8 @@ Cloud Computing is a robust and scalable dynamic platform where configurable com
 It can also be understood, as the U.S. \gls{nist} indicates as:
 \textit{(...) a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction} \Parencite{mell_grance_2011}. 
 
+According to the predictions in \Parencite{idc_2021}, \textit{`by the end of 2021, 80\% of enterprises will put a mechanism in place to shift to cloud-centric infrastructure and applications twice as fast as before the [Sars-Cov2] pandemic.'}
+
 Incorrectly used as a synonym of on-demand computing, grid computing or even \gls{saas} \Parencite{kim_2009}, Cloud Computing has become prevalent nowadays in academic, household and business environments, from small business to large enterprises \parencite{rezaei_chiew_lee_shams_aliee_2014} with multiple deployment models:
 
 \subsection{Deployment models for cloud computing}\label{state-of-the-art:ss:deployment-models-for-cloud-computing}
@@ -79,12 +81,17 @@ By producing documentation regarding the software architecture, someone unfamili
 
 \subsection{Modularity}\label{state-of-the-art:ss:modularity}
 
-Since the early years of software development, there existed the concept of dividing software into modules to improve its comprehensibility and flexibility, while carefully decomposing software in order not to generate too many inefficiencies with this approach \Parencite{parnas_1972}. Not only are \textit{comprehensibility} and \textit{flexibility} good qualities for the software to possess, but also \textit{dependability} and \textit{maintainability}. These qualities derive from proper software architecture design and implementation and must be contemplated in this phase of software development, as they are too integral to the core software design to be thought of during the software implementation phase.
+Since the early years of software development, there existed the concept of dividing software into modules to improve its comprehensibility and flexibility, while carefully decomposing software in order not to generate too many inefficiencies with this approach \Parencite{parnas_1972}. Not only are \textit{comprehensibility} and \textit{flexibility} good qualities for the software to possess, but also \textit{dependability}, \textit{maintainability}. These qualities derive from proper software architecture design and implementation and must be contemplated in this phase of software development, as they are too integral to the core software design to be thought of during the software implementation phase. By dividing the software into multiple components and as long as they are not tightly coupled, different developer teams can independently create those components, leading to increased flexibility in software development as well.
 
-\subsection{Reusing Software Components}
+
+\subsection{Reusing Software Components}\label{state-of-the-art:ss:reusing-software-components}
 
 By using modular software architectures, the modular software components are no longer required to be built by the same development team nor being built specifically for a single project. 
 Code reuse is a common practice nowadays and, similarly, reusing whole software components in a software architecture introduces the same advantages, by reducing work to be done in order to create a new architecture and implement it and easier and more cost-effective maintenance \Parencite{hasselbring2018software}. Additionally, it increases system stability, security and reliability when reusing components that have been publicly published and evaluated by the software development community. However, when dealing with 3rd-party components, additional care must be taken to ensure that the evaluation of that software is done on a constant basis and that any changes to that component only reflect on the system after thorough review of said changes. Otherwise, external actors may introduce malicious code in the component before publication and compromise the security of those who rely on that component \Parencite{tal_2022}.
+
+\subsection{Microservices}\label{state-of-the-art:ss:microservices}
+
+According to IDC's predictions \Parencite{idc_2019}, \textit{`by 2022, 90\% of all new apps will feature microservices architectures that improve the ability to design, debug, update, and leverage third-party code; 35\% of all production apps will be cloud-native'}.
 
 
 
