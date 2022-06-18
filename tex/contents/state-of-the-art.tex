@@ -103,10 +103,14 @@ In software development there two relevant goals during development: \textit{coh
 \subsubsection{Types of Coupling}\label{state-of-the-art:ss:types-of-coupling}
 
 
-Coupling can happen in multiple, different, manners. Given two components, A and B, if changing the implementation of \textit{A} requires re-implementation of \textit{B}, then there is \textit{implementation coupling}. This is a regular occurence when two components share the same database: if one components changes its database-schema structure, then those changes need to be implemented simultaneously in all other components that rely on the same database-schema structure. This is usually easy to fix, by requiring all components to access the database through a single service, like an \as{api}. If the database-schema needs change, then only the service that serves the database information needs to be changed.
+Coupling can happen in multiple, different, manners. Given two components, \textit{A} and \textit{B}, if changing the implementation of \textit{A} requires re-implementation of \textit{B}, then there is \textbf{\textit{implementation coupling}}. This is a regular occurence when two components share the same database: if one components changes its database-schema structure, then those changes need to be implemented simultaneously in all other components that rely on the same database-schema structure. This is usually easy to fix, by requiring all components to access the database through a single service, like an \as{api}. If the database-schema needs change, then only the service that serves the database information needs to be changed.
+
+Take component \textit{A} and \textit{B}, where \textit{A} sends a syncronous message to \textit{B} for it to perform a task. If these components rely on synchronous calls to each other to operate, then to perform those calls between each other they need to be up and running and reachable. This is called \textbf{\textit{temporal coupling}}. If something occurs that delays a message between \textit{A} and \textit{B} or if one of them is unavailable, then calls that \textit{A} makes to \textit{B} will not be delivered and will be lost. To avoid this, \textit{caching} or \textit{asynchronous} messages sent through a \textit{message broker} can be used. \textit{Caching} would function for serving cached static content and using a \textit{message broker} would allow messages to be picked-up downstream as soon as the service downstream was available.
 
 
-\subsection{Monolithic or Modular and their differences}\label{state-of-the-art:ss:monolithic-or-modular-and-their-differences}
+
+
+\subsection{Monolithic and Modular Monolithic}\label{state-of-the-art:ss:monolithic-or-modular-and-their-differences}
 
 There are multiple, design patterns for software architecture. The most common software architecture, that is generally the first architecture used when developing a new product in a prototype or academic environment is a monolithic architecture. In this kind of architecture, all (or a majority) of the functions of the software are encapsulated in a single software application~\Parencite{chen_li_li_2017}. This monolithic approach makes it easy to develop, test and deploy software, until the amount of functions it encompasses stops being small. When that happens, when the number of functions grows, evolving and updating the software becomes unwieldy. This is due to the high coupling that accompanies monolithic software architectures. In monolithic software architectures, the application's modules cannot be executed independently, changes to a function require the restart of the entire application, usually requiring considerable \textit{downtime}.\footnote{\label{foot:downtime}Time during which the Client doesn't have access to the application}
 
@@ -117,51 +121,38 @@ When a monolithic application is composed of multiple modules, where these can b
 \input{tex/contents/fig/modular-monolith.drawio.pdf.tex}
 
 
-
-
-
-
 \subsection{Microservices}\label{state-of-the-art:ss:microservices}
 
-Splitting the software system into multiple, independently maintained, fine-grained components, allows developers to deliver software faster and embracing new technologies even faster. By resorting to microservices, new technologies can be tested and prototypes developed in a blink of an eye.
+\input{tex/contents/fig/aws-netflix-microservice-dave-hahn.tex}
+
+Splitting the software system into multiple, independently maintained, fine-grained components, allows developers to deliver software faster and embracing new technologies even faster. 
+
+By resorting to microservices, new technologies can be tested and prototypes developed in a blink of an eye.
 According to~\Parencite{newman_2015}, \textit{`microservices are small, autonomous services that work together'}. While simplistic, this definition sums up quite well what microservices are. Transporting the \gls{srp} in~\Parencite{martin_2014} from classes to microservices, having these fine-grained, independent services allows for more cohesion. As Newman interprets Martin, \textit{`Gather together those things that change for the
 same reason, and separate those things that change for different reasons.'}.
-
-\subsubsection{Key Benefits}\label{state-of-the-art:sss:key-benefits}
-
-In a monolithic
-
-
-
-
 
 
 According to IDC's predictions~\Parencite{idc_2019}, \textit{`by 2022, 90\% of all new apps will feature microservices architectures that improve the ability to design, debug, update, and leverage third-party code; 35\% of all production apps will be cloud-native'}.
 
 
 
+\subsubsection{Key Benefits}\label{state-of-the-art:sss:key-benefits}
+
+In a monolithic architecture, the technologies used throughout the application need to be compatible with each other. Developing an application in Java and C++ and Python is not possible in such a monolithic architecture. 
+By using microservices, developers can now take advantage of \textbf{\textit{Technology Heterogeneity}}. If an application is made up of several, different services that can communicate using shared communication protocols, then there is no reason they can't use different technologies. The application can have services providing, for example, real-time video encoding using CUDA\footnote{\label{foot:cuda}https://developer.nvidia.com/cuda-toolkit} and C, have services performing data science tasks in Python, built for academic research in a production environment, Java-based services providing text analysis, among other examples. The goal with \textit{Technology Heterogeneity} is to allow the development team to choose a technology stack that best suits a particular problem to be solved. If, after implementation, the technology stack is no longer ideal and needs to be replaced, it can happen much more easily and quickly. When transitioning from a monolithic architecture to a microservices architecture, this is ideal since it allows for the old technology stack to be transposed first, while the team readjusts to the new architectural rules. By doing this, the development team doesn't require training in new technologies during the migration since it can be done at a later time, and can implement the new architecture using the previous technology stack. Then, when the team has more availability, individual services can be targeted for upgrade to a better suited technology stack. By using microservices architecture, the amount of work required to replace legacy code or to remove unused code is smaller since the services are more granular and independent. Thus, the cost of replacing code is small and \textbf{\textit{Replaceability}} is optimized.
+
+Unlike monolithic applications, a component failure doesn't require the whole application to be unavailable to the clients. Since the services are plenty and independent, failures don't propagate as easily and thus, service to the client can be somewhat maintained, increasing the \textbf{\textit{Resiliency}} of the application. This can also be transposed to deployment. \textit{Deployment} for a monolithic application is difficult, as it requires the entire application to be deployed and thus, is highly impactful and prone to causing failure if just one component fails. Since the microservice application is resilient, \textit{Deployments} present a lower risk of complete failure. Having less complex and more granular components, the microservice application has \textbf{\textit{Easier Deployments}}. This same low complexity and granularity also makes \textbf{\textit{Testing}} easier and able to be performed more regularly, decreasing the chances of failure. 
+
+Microservices also allow for independence between development teams, as the \textit{coupling} between services is very low. This means that backend development teams don't need to meet and engage with frontend development teams as often since the impact of changes to a backend service is also low.
+
+During high usage spikes, a monolithic application would need to be scaled up in order to respond to the inrush of user requests. This means that all the components of the application would be scaled up, regardless of their importance to the high usage spike. This creates two problems, one being the computing resources that would need to be allocated to scale an entire application is much more challenging and the second relates to the inefficient use of resources, since not all components of the application would require the \textbf{\textit{Scaling}} operation. By using microservices, individual services can be scaled up (or down) independently, quickly and possibly automatically in order to better suit the demands posed by the application's users.
 
 
+\section{DevOps}\label{state-of-the-art:s:devops}
 
+The \textit{portmanteau} of Development and Operations - DevOps - is as "(...) a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality", according to~\Parencite{bass_weber_zhu_2015}. There are, therefore, four things to retain from this definition. The two time periods where Development and Deployment occur, the quality of the changes to be committed to a system and the quality of the processes of putting those changes into production~\Parencite{sallin_kropp_anslow_quilty_meier_2021}.
 
-
-
-
-
-
-
-
-
-\section{Code Deployment}\label{state-of-the-art:s:code-deployment}
-
-
-
-
-\subsection{DevOps}\label{state-of-the-art:ss:devops}
-
-The \textit{portmanteau} of Development and Operations - DevOps - is as "(...) a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality", according to~\Parencite{bass_weber_zhu_2015}. There are, therefore, three things to retain from this definition. The two time periods where Development and Deployment occur, the quality of the changes to be committed to a system and the quality of the processes of putting those changes into production~\Parencite{sallin_kropp_anslow_quilty_meier_2021}.
-
-\subsubsection{Development Time}
+\subsection{Development Time}
 This time
 
 \section{Observability}\label{state-of-the-art:s:observability}
