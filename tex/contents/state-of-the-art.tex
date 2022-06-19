@@ -131,6 +131,8 @@ By resorting to microservices, new technologies can be tested and prototypes dev
 According to~\Parencite{newman_2015}, \textit{`microservices are small, autonomous services that work together'}. While simplistic, this definition sums up quite well what microservices are. Transporting the \gls{srp} in~\Parencite{martin_2014} from classes to microservices, having these fine-grained, independent services allows for more cohesion. As Newman interprets Martin, \textit{`Gather together those things that change for the
 same reason, and separate those things that change for different reasons.'}.
 
+\input{tex/contents/fig/microservice-arch.drawio.pdf.tex}
+
 
 According to IDC's predictions~\Parencite{idc_2019}, \textit{`by 2022, 90\% of all new apps will feature microservices architectures that improve the ability to design, debug, update, and leverage third-party code; 35\% of all production apps will be cloud-native'}.
 
@@ -150,10 +152,25 @@ During high usage spikes, a monolithic application would need to be scaled up in
 
 \section{DevOps}\label{state-of-the-art:s:devops}
 
-The \textit{portmanteau} of Development and Operations - DevOps - is as "(...) a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality", according to~\Parencite{bass_weber_zhu_2015}. There are, therefore, four things to retain from this definition. The two time periods where Development and Deployment occur, the quality of the changes to be committed to a system and the quality of the processes of putting those changes into production~\Parencite{sallin_kropp_anslow_quilty_meier_2021}.
+The \textit{portmanteau} of Development and Operations --- DevOps --- is `(\ldots) a set of practices intended to reduce the time between committing a change to a system and the change being placed into normal production, while ensuring high quality', according to~\Parencite{bass_weber_zhu_2015}. 
+In \parencite{sallin_kropp_anslow_quilty_meier_2021}, the authors start by analyzing the use of the \gls{fkm} \parencite{48455} for measuring developer performance and DevOps adoption in software companies. Then, the authors evaluate how can these metrics be measured automatically. 
 
-\subsection{Development Time}
-This time
+\subsection{Deployment Frequency}\label{state-of-the-art:ss:deployment-frequency}
+
+Deployment frequency relates to the frequency at which code is pushed into production. Generally, this is performed by making small changes and placing them in a production environment regularly. This is usually achieved through good \gls{cicd} practices. The smaller changes lead to fewer potential issues arising during deployment to production and allow for more control over changes.
+
+\subsection{Lead Time for Change}\label{state-of-the-art:ss:lead-time-for-change}
+
+This is defined in \parencite{48455} as the \textit{`the time it takes to go from code committed to code successfully running in production'}. Having the goal to minimize this time leads to faster feedback after changes have been deployed, which in turn allow for faster correction in case of failure. This also applies not only to changes that introduce new features or modify them but also for potential bug fixing deployments. In some of the articles mentioned in the analysis performed by the authors in \parencite{sallin_kropp_anslow_quilty_meier_2021} it's mentioned that certain companies have used the \textit{commit} into the version control system as the start of the change procedure.
+
+\subsection{Time to Restore Service}\label{state-of-the-art:ss:time-to-restore-service}
+
+The time it takes to restore service, equivalent to the time between the start of \textit{downtime} and its end, is an essential metric. With ever more complex systems and newer technologies, system failure is bound to happen. How, and how quickly a situation is resolved, is an essential metric for the day-to-day operations of a software company providing a product such as a \gls{saas}. 
+
+\subsection{Change Failure Rate}\label{state-of-the-art:ss:change-failure-rate}
+
+The rate at which deployments to production lead to system failure or impairment, requiring remediation. This remediation can be in the form of a hot fix, a patch, a rollback, among others. Some articles analyzed in \parencite{sallin_kropp_anslow_quilty_meier_2021} also suggest different interpretations to this definition such as using the percentage of releases that were performed as \textit{fixes} or \textit{hotfixes}, detecting failure through observability tools or manually marking deployments as failed or successful.
+
 
 \section{Observability}\label{state-of-the-art:s:observability}
 
