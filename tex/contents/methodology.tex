@@ -189,6 +189,10 @@ Regarding the \gls{fkm}, based on the previous issues that have been shown, by u
 
 As mentioned in \cref{methodology:sss:deployments}, the difficulty with which deployments are performed forces the development team to gather numerous changes before deploying them so that the deployment can be performed less frequently, resulting in less \textit{downtime} for the client. This, inevitably, lead to both a lower \textit{Deployment Frequency} and also a bigger \textit{Lead Time for Change}.
 
+In \cref{methodology:sss:deployments}, it's also mentioned the amount of \textit{downtime} that is to be expected when deploying changes to production. Such an amount of \textit{downtime} is unacceptable for a normal, eventless deployment. However, when failure occurs in the application using the old architecture, the \textit{Time to Restore Service} is composed of multiple amounts of time: the time it takes for the failure to be detected, the time is takes to find a mitigation for the failure or troubleshooting time, the time it takes to re-deploy the application (which is around 20 to 30 minutes in case the mitigation requires changes to the code) and the time it takes for the recently deployed services to be back online. If failure occurs during the run of a task, that task (and subsequent tasks that failed to start) will need to be run manually as well. 
+
+Since the development team gathers numerous changes before deploying them to production, the chance of failure increases. Besides exacerbating the problem with the \textit{Time to Restore Service}, this method of deployment also increases \textit{Change Failure Rate}.
+
 
 
 \subsection{Observability}\label{methodology:ss:observability}
@@ -197,12 +201,6 @@ One of the issues with the old architecture was the lower Observability that it 
 
 \subsubsection{Alerts}\label{methodology:sss:alerts}
 A consequence of the old architecture's lack of system observability, there were no useful metrics being created and store besides the ones pertaining to the algorithm result. Metrics are required in order to, having a set of thresholds for each one of them, produce alarms. Alarms automatically inform the Maintainers and \textit{stakeholders} of unexpected system behavior or catastrophic system failure in a timely manner, giving the chance for the development team to trace the cause(s) of the problem(s) before they become apparent and/or disruptive to the Clients. For some Clients, there were metrics and alarms setup based on the Tank's water level that would send messages to a Slack channel shared between the company and the respective Client, but fell into disuse.
-
-
-
-\subsection{Deployment}\label{methodology:ss:deployment}
-
-The process of deploying new functionality or code fixes to Client's servers that use the old architecture can quickly become a multi-hour endeavor. Despite being a somewhat modular architecture, given that each service has its own docker container, they are dependent on each other when initializing the containers. On some deployment procedures, namely when changing code in the Workers container, it requires updating the Workers' docker image, running GitLab's \gls{cicd} pipelines for this deployment of the Workers' docker image and then tag a completely different repository —  \textbf{dbs} — inside the same Client's GitLab project so that it triggers another \gls{cicd} pipeline which replaces all the containers within the Client's \gls{ec2} instance with the \textit{latest} version of each service's container image. Although the last step, which replaces the containers is performed rather quickly and the apparent downtime for the Client is minimal, the amount of time for the image building in the \gls{cicd} process is cumbersome, reaching a combined time of 20 to 30 minutes on average. This chaotic and time-consuming process leads to lack of motivation for the development team to introduce new features regularly. This leads to lower Deployment Frequency, increased Lead Time for Change and Time to Restore Service (when a deployment or unexpected bug occurs). Additionally, the complexity and tight-coupling of services leads to increase Change Failure Rate. 
 
 \subsubsection{Singular Environment}\label{methodology:sss:singular-environment}
 
