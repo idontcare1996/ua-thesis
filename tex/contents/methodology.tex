@@ -361,7 +361,7 @@ As a result of trying to improve the architecture, splitting each one of the tas
 For the VPN, the chosen implementation was to use the now popular WireGuard\footnote{https://www.wireguard.com/\label{foot:wireguard}} VPN server. This was a decision taken based on \parencite{ndss_wireguard}.
 As for the DNS server, the implementation chosen was a popular choice among the Networking community --- Unbound\footnote{https://nlnetlabs.nl/projects/unbound/about/}, since it was only required due to regular failures with the AWS DNS server. After a full audit report by the Open Source Technology Improvement Fund, published online \parencite{ostif_2022}, the decision was taken to use this implementation.
 
-\subsection{Observability}\label{methodology:ss:new-observability}
+\subsection{Observability}\label{methodology:ss:final-observability}
 
 Increasing the old architecture's observability is not easy. After carefully studying the most popular Observability technology stacks, it was decided in conjunction with the \textit{stakeholders} and the \textit{CTO} that further studying of this subject was in order so as to properly implement it. Using empirical data from other companies and industry veterans,implementing the proposed Observability technology stack was deemed arduous and out of the scope of this work.
 
@@ -369,5 +369,11 @@ However, this new architecture relies heavily on AWS infrastructure and as such,
 
 \subsection{Finalized Proposed Version}\label{methodology:ss:finalized-proposed-version}
 
-After compiling all of the information in the previous sections and subsections, final diagrams that encompass the new architecture are presented hereafter. This is the new architecture that has been put into production for the new Clients that have been gathered since this migration project started and has been used daily since May 2022. 
+After compiling all of the information in the previous sections and subsections, final diagrams that encompass the new architecture are presented hereafter. This is the new architecture that has been put into production for the new Clients that have been gathered since this migration project started, and has been used daily since May 2022. 
+
+\input{tex/contents/fig/final-arch-networking.drawio.pdf.tex} 
+
+Starting with a networking and security overview, as can be seen in \cref{fig:final-arch-networking}, the different services are shown in their respective matrix of environments. These environments have the goal to separate the different development environments --- Internal, Staging, Production --- and the services which require both access to the Internet and to be accessed from the Internet. On the Public Environment, both the Grafana services and the Backend APIs are accessible from the Internet, as they are connected to the Main VPC's Internet Gateway which allows containers bidirectional communication to the Internet. In contrast, the services hosted on the Private Environment Clusters are inaccessible from the Internet and need a NAT gateway service\footnote{https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html \label{foot:nat-gateway}} to be able to access the Internet (although only for request that originate from inside the private subnets).
+
+Note that there are no relationships between the services, as these relations have already been demonstrated in previous sections.
 
