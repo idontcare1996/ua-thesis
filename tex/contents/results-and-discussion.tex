@@ -32,6 +32,24 @@ There are also costs related to Data Transfer in and out of the \gls{vpc}, costs
 
 Besides the infrastructural scaling issue, there was also a problem scaling the human resources needed for development. Having the Application be the same for all of the Clients, instead of being one separately maintained Application for each Client, drastically lowers the developer manpower needed for maintaining and updating an Application for multiple Clients. Therefore, this new architecture is substantially and clearly scalable when compared with the previous architecture.
 
+\subsection{Ensuring Performance}\label{results-and-discussion:ss:ensuring-performance}
+
+One of the constraints with the new architecture's Application was that it should not perform visibly worse than the old architecture's Application. In order to attest that, those services which suffered from peaks in usage that were available in both the old and new architecture's Application should be compared. Unfortunately, only the Water Forecasting service was common between both the new architecture's Application and one of the older Client's Application. Despite having just one metric to analyze, it is still a metric worth checking.
+
+In order to analyze this, since neither Application has a working metric collector to check the duration of water forecast tasks, the values had to be manually checked from the logs that task emitted. For the old architecture, that was achieved by consulting Google's Cloud's operations suite, formerly Stackdriver\footnote{https://cloud.google.com/products/operations\label{foot:stackdriver}}. The new architecture was able to provide this information through AWS' CloudWatch Observability platform.
+
+\input{tex/contents/tab/water-forecast-task-duration.tex}
+
+After running forecasts for 13 different days, which refer to 13 forecast tasks executed one for each day, the results are presented in \cref{tab:water-forecast-task-duration}.
+
+As can be seen, the duration of the task improved quite considerably, ensuring that the performance that was achieved in the previous architecture is still easily achievable and with room to grow.
+
+
+
+
+
+
+
 \section{DevOps Improvements}\label{results-and-discussion:s:devops-improvements}
 
 The Company's developer team's general sentiment towards the implementation of the new architecture is one of relief and excitement. As stated in \Cref{methodology:sss:deployments} and \cref{methodology:sss:testing}, there were several issues regarding the developer workflow when working in the Application. After implementing the new architecture, these concerns have diminished considerably. The measures taken in \cref{methodology:ss:solving-the-deployment-issues} and \Cref{methodology:sss:testing-new} have brought a new and better workflow to the development team. This can be attested by the results in the \gls{fkm}.
@@ -75,4 +93,24 @@ Nevertheless, the changes to the architecture should prove that this metric has 
 \section{Observability Improvements}\label{results-and-discussion:ss:observability-improvements}
 
 As for Observability of the System, this has increased, reaching the goal that was set out in the beginning of the project.
-The old architecture has no Observability, with the exception of the logs that are aggregated by Google Cloud's operations suite, formerly Stackdriver\footnote{https://cloud.google.com/products/operations\label{foot:stackdriver}} and AWS's \gls{ec2} machine 
+The old architecture has no Observability, with the exception of the logs that are aggregated by Google Cloud's operations suite, formerly Stackdriver (Screenshot available on \Cref{fig:stackdriver-example-01}) and AWS's \gls{ec2} instance resource monitoring shown on \cref{fig:aws-ec2-basic-observability}
+
+\input{tex/contents/fig/aws-ec2-basic-observability.tex}
+
+These are the only two Observability options for the old architecture. Although the AWS \gls{ec2} instance monitoring can provide useful information regarding CPU, Memory and Network activity throughout time, not much can be concluded from that.
+
+Now, with the new architecture making use of AWS' \gls{ecs} platform to orchestrate each service's containers, with the ability to create metric from the logs it gathers and set alarms for those metrics, the amount and quality of Observability has improved considerably. Since each service is separate and independent, resource usage can be more useful to determine, how, when and why bottlenecks might occur when performing tasks.
+Through monitoring solutions such as AWS' CloudWatch\footnote{https://aws.amazon.com/cloudwatch/ \label{foot:cloudwatch}}, it's possible to obtain knowledge regarding internal system behavior that was not previously possible in the old architecture.
+As an example, the image in \cref{fig:ecs-example-01} shows three usage spikes across different services. Reducing the number of services shown on the graph as in \cref{fig:ecs-example-02} allows the reader to understand that the services using the CPU in those spikes are the Backend API and the Timeseries database: InfluxDB.
+Occurring 3 times, and at the same time that the forecasting, optimization and simulation tasks are running attests that the two events are indeed related, as they should be.
+
+As for the services, through this observability tool, it was possible to verify resource utilization by service and by environment. With this information available, it's now possible to analyze if the container running the service is well dimensioned for the service it's running. In \cref{fig:ecs-example-03} it can be seen that, apart to the spikes in CPU usage, most of the services remain idle for the most part, with the exception of the redis services, which are using 15\% of the capacity that was reserved for each container. This indicates that, while not optimal, since the service is already operating on the lowest powered and cheapest container possible, it's well dimensioned. The remaining services, excluding the Backend API and InfluxDB have an average CPU utilization below 5\%, which indicates that for some of those services, reducing their container's CPU capacity can be further achieved.
+
+
+\input{tex/contents/fig/ecs-example-01.tex}
+
+\input{tex/contents/fig/ecs-example-02.tex} 
+
+\input{tex/contents/fig/ecs-example-03.tex} 
+
+All in all, the Observability of the Application is superior when using the new architecture, and as such, the goal set in the beginning of the document was achieved.

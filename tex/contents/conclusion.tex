@@ -2,4 +2,31 @@
 
 \section{Final Considerations}\label{conclusion:s:final-considerations}
 
+Building software from the start is not a simple process, and it is always bound by engineering, time and business constraints. When Water Utilities pick software to use for the management of their daily pump operations, they are expecting an Application that can be reliable and resilient but also performant. 
+The goal of this dissertation was to take the previous Application's architecture and build a new Application from the ground up, reusing code as little as possible, with the exception of the code that runs the special forecasting, simulation and optimization algorithms. This new Application, using a new software architecture, was meant to fix the major problems plaguing the old Application, mainly the scalability issue.
+
+After carefully reading the books regarding microservices and software architecture design, the design patterns and knowledge was applied and an analysis of the problem was performed.
+Looking into the old architecture revealed more issues than it was thought to have. The issues that were decided to be solved: the scalability, DevOps challenges and Observability improvement were the goals to achieve with the new Application.
+
+In order to accomplish such goals, a new way to think about how to handle multiple, simultaneous Clients was needed. By using modern software engineering and software architecture techniques, the new architecture started to gain shape as it separated its modules from the Application's monolithic architecture. This separation of responsibilities and independence for each module allowed the Application to serve both the Client and the Developer in a much easier way.
+
+After sorting the scalability problem by removing the services from the monolithic Application and using them as microservices in a containerized environment, where orchestration was automatic, many of the problems plaguing the old architecture were gone.
+
+The move to AWS Infrastructure, more precisely, to the serverless platform for containers: Fargate, allowed for greater than before Observability of the system, which improves the overall DevOps metrics.
+
+As for the final goal, of improving the Four Key Metrics of DevOps, the goal was achieved as well, since the process to deploy changes to production was more robust and production-safe while also improving by a long margin the delays that occurred between committing a change to the Application's code repository and the change being put into Production. 
+
+Overall, the technologies used were more than adequate and suited for the work that was proposed. Having achieved the goals set in the Introduction of this document, it is safe to say that the final product, the Application was successful.
+
 \section{Future Work}\label{conclusion:s:future-work}
+
+Despite meeting all of the goals set out in the begginning of the project, there were some concerns that were not mentioned in the document that are as important or even more important than the architecture. 
+Altough they required the architecture to reach a more concluded state before being implemented, there are functionalities such as:
+
+\begin{itemize}
+    \item Authentication and Authorization not relying on the Backend API.
+    \item Implementation of automatic actions based on observability metrics.
+    \item Development of a standard protocol for Water Utilities to send their data.
+\end{itemize}
+
+Another possible work for the future would be to implement Observability using third-party, open-source tooling, so that the Application and supporting software were not tied to a specific infrastructure provider such as AWS. 
