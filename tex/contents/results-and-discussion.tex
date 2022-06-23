@@ -28,17 +28,51 @@ As can be observed in \cref{fig:infra-cost-per-client}, the monthly cost of main
 The costs presented here are only the main costs associated with the differences between the architectures. These are the bulk of the monthly costs with the infrastructure used.
 There are also costs related to Data Transfer in and out of the \gls{vpc}, costs with Costumer Support, costs associated with automatic backups of data and other resources. Some resource usages are not reported in this document due to Client confidentiality agreements, being free of charge or being used so sparingly or in low quantities that the costs are irrelevant or included in the Free Tier\footnote{Certain AWS resources are free until a certain level of usage is achieved.}.
 
-\subsection{Development and Deployment Issues}
+\subsection{Development and Deployment Issues}\label{results-and-discussion:ss:development-and-deployment-issues}
 
 Besides the infrastructural scaling issue, there was also a problem scaling the human resources needed for development. Having the Application be the same for all of the Clients, instead of being one separately maintained Application for each Client, drastically lowers the developer manpower needed for maintaining and updating an Application for multiple Clients. Therefore, this new architecture is substantially and clearly scalable when compared with the previous architecture.
 
-\section{DevOps Improvements}\label{results-and-discussion:ss:devops-improvements}
+\section{DevOps Improvements}\label{results-and-discussion:s:devops-improvements}
 
 The Company's developer team's general sentiment towards the implementation of the new architecture is one of relief and excitement. As stated in \Cref{methodology:sss:deployments} and \cref{methodology:sss:testing}, there were several issues regarding the developer workflow when working in the Application. After implementing the new architecture, these concerns have diminished considerably. The measures taken in \cref{methodology:ss:solving-the-deployment-issues} and \Cref{methodology:sss:testing-new} have brought a new and better workflow to the development team. This can be attested by the results in the \gls{fkm}.
 
+\subsection{Deployment Frequency}\label{results-and-discussion:ss:deployment}
+
+In order to measure the deployment frequency of the old architecture, GitLab's tagging list for a select number of Clients was analyzed. As stated in \Cref{methodology:sss:deployments}, each deployment made to the old architecture's infrastructure was linked to a \textit{tag} in the subversion control system. Following the history for each tag since the first day of January 2020, ignoring failures to deploy due to badly configured CI/CD elements, the table present in \cref{tab:old-deployments-per-quarter} was elaborated. Client's names are omitted due to confidentiality agreements. Client C****'s Application was only pushed into Production on the 11th of April 2021, hence the lack of data up until the 2nd quarter of that year. Despite the fact that the deployments made for these older clients were made due to updates or bugs in different modules of the Application, since the Application has very high deployment coupling, the process of deployment was nearly identical for all of these events and counted towards this table in the same manner.
+
+\input{tex/contents/tab/old-deployments-per-quarter.tex}
+
+The choice of the time period was done purposely for several reasons. The first is related to the recent SARS-Cov2 pandemic that changed the workflow inside the Company, seeing that the workforce was relocated to working-from-home during the year of 2020. The second reason was the development team itself, that changed considerably during the pandemic. Third reason was the influence of this project to build a new architecture, since it changed the Company's development priorities. The idea of a new architecture was considered somewhere in 2020, and became a priority in late 2021. The development and deployment of updates to Clients is not uniformly distributed throughout this time period, since newer Clients become priority as the amount of work is greater at the beginning of a new Client project. The table is indexed by time, with time periods of 4 months, in order not to occupy too much space in the document. For each block of 4 months, it's presented the total number of deployments performed for each Client during that time period. 
+
+From \Cref{tab:old-deployments-per-quarter}, it also becomes apparent that the development team does not work on multiple projects simultaneously with the same involvement. Each time a Client requires refactoring or updates, the amount of deployments performed to other clients drops drastically. It can also be observed that, unless a refactor or big update is required, the amount of deployments is very reduced or non-existent.
+Finally, the plan to move these older Clients to the new Application that uses the new architecture is being put into place and the updates to the old Applications was put on hold, to focus work on the new architecture. This fact reflects on the lack of deployments for these older Clients since the fourth quarter of 2021, when the project to migrate to the new Application was started.
+
+\input{tex/contents/tab/new-service-deployments-monthly.tex}
+
+As for the Deployment Frequency of the new architecture and the new Application, the measurement was performed differently. Since each service is deployed independently, \Cref{tab:new-service-deployments-monthly} gathers the number of deployment per service per time period. Preparing the old architecture's components to accept multiple users and study, implement and test each one of them took some time, the deployment of the new architecture is relatively recent. Therefore, the time periods used in the table are in monthly intervals.
+
+Although there are only 4 months of available data, a trend can be seen. In comparison with the old architecture, the amount of total deployments per month has increased, increasing the Deployment Frequency.
+
+\subsection{Lead Time for Change}\label{results-and-discussion:ss:lead-time-for-change}
+
+Lead time for change, as a result of the new architecture and the new workflow it brings to the Company, has decreased rapidly. Whereas changes would take hours or even days to reach Production in the old architecture, the new architecture is able to deploy a new version of a service in a matter of minutes. There is no table for this subsection of results for multiple reasons:
+Firstly, because the planned Observability platform is not yet ready nor are the automatic \gls{cicd} procedures currently running. Due to this, data cannot be reliably obtained from neither an automatic Observability platform nor from a local registry. The development team is small and since the new architecture is still not finished, deployments have been made manually and, for that reason, there are no reliable records of when those deployments occurred. 
+
+Although this value cannot be stated, it can be empirically seen that this metric has decreased, which is an improvement. During the development of this implementation of the new architecture, there were only two persons working full time on this. Assuming the amount of re-prioritizing tasks was minimal, each developer mostly only addressed a change at a time. This means that every deployment was the result of the most recent change to code. Empirically, since the deployment and implementation coupling is low or non-existent, changes made to code were put into Production as soon as possible, leaving minutes or hours between changes and their deployment to Production. This was exacerbated since there were no real Clients using the new Application until the last month, July 2022, so the failure of a component was not a critical issue.
+
+Therefore, it can be considered that the Lead Time for Change has improved.
+
+\subsection{Time to Restore Service}\label{results-and-discussion:ss:Time to Restore Service}
+
+Likewise, the fact that the new architecture possesses low-to-nonexistent deployment coupling made the Time to Restore Service reach lower values. This can be seen by the fact that it is no longer required to deploy the whole Application in order to publish a fix to Production. There are also no \gls{ec2} instances to be restarted, so this time is even shorter now. Once again, however, this cannot be observed directly and objectively since there is no numerical data to back up this claim in a mathematical way.
+
+\subsection{Change Failure Rate}\label{results-and-discussion:ss:change-failure-rate}
+
+As previously referred in \cref{methodology:ss:solving-the-deployment-issues}, the new architecture's ability to test the code multiple times in similar environments drastically reduces the Change Failure Rate. This cannot be measured yet, for multiple reasons. Firstly, like the other metrics, there are no Observability metrics for this metric. Secondly, since this new architecture project is still being developed actively, the amount of changes is higher than would be expected during a normal time and so, this number should not be taken into account.
+Nevertheless, the changes to the architecture should prove that this metric has improved as soon as more data is available.
 
 
 \section{Observability Improvements}\label{results-and-discussion:ss:observability-improvements}
 
-\textcolor{orange}{Here, show some dashboards of the observability system, exemplifying normal day-to-day operation, error detection, etc...}
-
+As for Observability of the System, this has increased, reaching the goal that was set out in the beginning of the project.
+The old architecture had no Observability, with the exception of the 

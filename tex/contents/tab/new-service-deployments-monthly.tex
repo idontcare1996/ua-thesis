@@ -1,0 +1,15 @@
+\begin{table}[!htbp]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccccccc}
+\hline
+\rowcolor[HTML]{EFEFEF} 
+Month & \begin{tabular}[c]{@{}c@{}}Backend\\ API\end{tabular} & InfluxDB & PostgreSQL & \begin{tabular}[c]{@{}c@{}}Forecast\\ Worker\end{tabular} & \begin{tabular}[c]{@{}c@{}}Optimization\\ Worker\end{tabular} & \begin{tabular}[c]{@{}c@{}}Perfomance\\ Worker\end{tabular} & Redis & Total \\ \hline
+March & 5                                                     & 2        & 2          & 4                                                         & -                                                             & 2                                                           & 2     & 17    \\ \hline
+April & 5                                                     & 0        & 0          & 0                                                         & 5                                                             & 2                                                           & 0     & 12    \\ \hline
+May   & 2                                                     & 0        & 0          & 0                                                         & 11                                                            & 0                                                           & 0     & 13    \\ \hline
+June  & 3                                                     & 0        & 0          & 2                                                         & 1                                                             & 1                                                           & 0     & 7     \\ \hline
+\end{tabular}%
+}
+\caption{Number of monthly deployment events per service in the new architecture. Data collected from March 3rd to June 23rd, 2022}
+\label{tab:new-service-deployments-monthly}
+\end{table}
