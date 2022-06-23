@@ -1,0 +1,14 @@
+\begin{table}[!htbp]
+  \caption{Individual Cost of AWS Infrastructure used with the old architecture. Each Month corresponds to 30 days.}
+  \label{tab:individual-cost-aws-old}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{llccc}
+  \hline
+  \rowcolor[HTML]{EFEFEF} 
+  Name               & Description                                                                   & \multicolumn{1}{l}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Monthly\\ Use\\ (h)\end{tabular}} & \multicolumn{1}{l}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Hourly\\ Cost\\ (\$/h)\end{tabular}} & \multicolumn{1}{l}{\cellcolor[HTML]{EFEFEF}\begin{tabular}[c]{@{}l@{}}Monthly\\ Cost\\ (\$/month)\end{tabular}} \\ \hline
+  AWS EC2 t3a.large  & \begin{tabular}[c]{@{}l@{}}EC2 Instance with 2 vCPU and 8 GB RAM\end{tabular}      & 720                                                                                                   & 0.085                                                                                                    & 61.200                                                                                                        \\ \hline
+  AWS EC2 t3a.xlarge & \begin{tabular}[c]{@{}l@{}}EC2 Instance with 4 vCPU with 16 GB RAM\end{tabular}     & 720                                                                                                   & 0.1699                                                                                                   & 122.328                                                                                                       \\ \hline
+  AWS EBS Volume     & \begin{tabular}[c]{@{}l@{}}EBS Volume of type: gp2 with Size: 256 GB\end{tabular} & -                                                                                                     & -                                                                                                        & 29.696                                                                                                        \\ \hline
+  \end{tabular}%
+  }
+  \end{table}

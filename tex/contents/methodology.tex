@@ -326,9 +326,9 @@ This new approach uses the namespaces created by the AWS Cloud Map Discovery Ser
 
 \input{tex/contents/fig/service-naming.drawio.pdf.tex}
 
-\section{New components}\label{methodology:ss:new-components-new-arch}
+\subsection{New components}\label{methodology:ss:new-components-new-arch}
 
-\subsection{Serverless}\label{methodology:sss:serverless}
+\subsubsection{Serverless}\label{methodology:sss:serverless}
 
 As can be seen in \Cref{fig:new-arch-scalable} and \Cref{fig:new-arch-queues}, the Clients send their data to the Data Intake. The data intake process is relatively simple: Take the Client's sensor data, correctly tag the data and send it to the Data Intake Queue, to be placed in the Timeseries Database. 
 However, not all Clients are the same. Some Clients send raw text files, some send \gls{csv} text files and even Microsoft Excel files. Some files are received through e-mail, others through SFTP. 
@@ -341,7 +341,7 @@ By building and deploying several Lambda functions, one for each method of data 
 \input{tex/contents/fig/data-intake.drawio.pdf.tex}
 
 
-\subsection{Backend API}\label{methodology:ss:backendapi}
+\subsubsection{Backend API}\label{methodology:ss:backendapi}
 The first element of the new architecture to be researched and produced was the Backend \gls{api}. A new \gls{api} solves the problem that existed with having different methods to read and write to the databases. Using this Backend \gls{api}, each service that requires access to the database is therefore required to have authorization to access the Backend \gls{api}, which in turn reinforces security regarding database access. Having a standardized method to access the databases also allows for easier debugging, since every service uses the same\gls{api}interfaces, which can help rule out databases and the Backend\gls{api}from possible fault causes.
 
 The old architecture had a Flask \gls{api} that served a webservice through which developers could manually tweak optimization and forecasting settings and issue tasks. This \gls{api}, however, had no security features nor any authentication in place, with its access limited only through network settings, where each developer had to manually establish an \gls{ssh} tunnel to the Client's \gls{ec2} machine in order to access said \gls{api}. Due to time constraints and limited knowledge inside the company regarding securing a Flask \gls{api}, research had to be performed in order to determine the best course of action regarding the choice of web framework for a Backend \gls{api}.
