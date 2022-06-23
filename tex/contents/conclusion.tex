@@ -5,7 +5,7 @@
 Building software from the start is not a simple process, and it is always bound by engineering, time and business constraints. When Water Utilities pick software to use for the management of their daily pump operations, they are expecting an Application that can be reliable and resilient but also performant. 
 The goal of this dissertation was to take the previous Application's architecture and build a new Application from the ground up, reusing code as little as possible, with the exception of the code that runs the special forecasting, simulation and optimization algorithms. This new Application, using a new software architecture, was meant to fix the major problems plaguing the old Application, mainly the scalability issue.
 
-After carefully reading the books regarding microservices and software architecture design, the design patterns and knowledge was applied and an analysis of the problem was performed.
+The microservices and software architecture design literature was enlightening, and so, the design patterns and knowledge was applied to this task and an analysis of the problem was performed.
 Looking into the old architecture revealed more issues than it was thought to have. The issues that were decided to be solved: the scalability, DevOps challenges and Observability improvement were the goals to achieve with the new Application.
 
 In order to accomplish such goals, a new way to think about how to handle multiple, simultaneous Clients was needed. By using modern software engineering and software architecture techniques, the new architecture started to gain shape as it separated its modules from the Application's monolithic architecture. This separation of responsibilities and independence for each module allowed the Application to serve both the Client and the Developer in a much easier way.
@@ -24,9 +24,9 @@ Despite meeting all of the goals set out in the beginning of the project, there 
 Although they required the architecture to reach a more concluded state before being implemented, there are functionalities such as:
 
 \begin{itemize}
-    \item Authentication and Authorization not relying on the Backend API.
+    %\item Authentication and Authorization not relying on the Backend API.
     \item Implementation of automatic actions based on observability metrics.
-    \item Development of a standard protocol for Water Utilities to send their data.
+    \item Development of a standard protocol for Water Utilities to send their data to reduce pre-processing on the Company's infrastructure.
 \end{itemize}
 
 Another possible work for the future would be to implement Observability using third-party, open-source tooling, so that the Application and supporting software were not tied to a specific infrastructure provider such as AWS. 
