@@ -4,7 +4,7 @@
 
 \subsection{Cost Rundown}\label{results-and-discussion:ss:cost-rundown}
 
-The Infrastructure used to provide the Application to the Client is not free. As such, before comparing the older and newer architectures, the costs associated with each individual item are presented in \Cref{tab:individual-cost-aws-old} and \Cref{tab:individual-cost-aws-new}, respectively. 
+The Infrastructure used to provide the Application to the Client is not free. As such, before comparing the older and newer architectures, the costs associated with each individual item are presented in \Cref{tab:individual-cost-aws-old} and \Cref{tab:individual-cost-aws-new}, respectively.
 
 \input{tex/contents/tab/individual-cost-aws-old.tex}
 
@@ -12,7 +12,7 @@ Each Client using the old architecture would require one of the two \gls{ec2} in
 
 \input{tex/contents/tab/individual-cost-aws-new.tex}
 
-\input{tex/contents/fig/infra-cost-per-client.tex}
+
 
 As mentioned in \cref{methodology:sss:scaling}, due to constraints in the AWS EC2 service, there is a maximum limit of 32 \gls{vcpu} units for each AWS account. This means that, even if all of the Clients only required the smaller option that uses 2 \gls{vcpu}, the maximum number of Clients would still be only 16 Clients. With the new architecture, there is no hard limit on the number of clients that can be served simultaneously. As of the time of writing, the new architecture is currently serving three different clients, being that one of these Clients has a water network that generates as much data as all previous Clients combined, for both the old architecture and the new one. It was also tested using 17 fictional Clients, totaling 20 Clients being served by the Application simultaneously, with no discernible issues for the Users nor resource usages above the normal everyday operation with the three regular Clients.
 
@@ -22,8 +22,10 @@ The new architecture has one Application for each development environment --- Pr
 
 As can be observed in \cref{fig:infra-cost-per-client}, the monthly cost of maintaining the infrastructure needed for the Application scales linearly for the old architecture, while the new architecture's cost for low amounts of Clients is kept steady. Despite the fact that the new infrastructure has not yet been tested for more than 20 Clients, hence the data in the figure ending at 20 clients, according to the resource usage during both peak hours and idle times, these were largely unaltered, and usage difference was negligible. Therefore, the usage of the Application using the new architecture is sure to be capable of handling many more Clients simultaneously.
 
+\input{tex/contents/fig/infra-cost-per-client.tex}
 
-\subsubsection{Remaining Costs}\label{results-and-discussion:sss:remaining-costs}
+
+\subsubsection*{Remaining Costs}\label{results-and-discussion:sss:remaining-costs} 
 
 The costs presented here are only the main costs associated with the differences between the architectures. These are the bulk of the monthly costs with the infrastructure used.
 There are also costs related to Data Transfer in and out of the \gls{vpc}, costs with Costumer Support, costs associated with automatic backups of data and other resources. Some resource usages are not reported in this document due to Client confidentiality agreements, being free of charge or being used so sparingly or in low quantities that the costs are irrelevant or included in the Free Tier\footnote{Certain AWS resources are free until a certain level of usage is achieved.}.
@@ -38,9 +40,11 @@ One of the constraints with the new architecture's Application was that it shoul
 
 In order to analyze this, since neither Application has a working metric collector to check the duration of water forecast tasks, the values had to be manually checked from the logs that task emitted. For the old architecture, that was achieved by consulting Google's Cloud's operations suite, formerly Stackdriver\footnote{https://cloud.google.com/products/operations\label{foot:stackdriver}}. The new architecture was able to provide this information through AWS' CloudWatch Observability platform.
 
-\input{tex/contents/tab/water-forecast-task-duration.tex}
+
 
 After running forecasts for 13 different days, which refer to 13 forecast tasks executed one for each day, the results are presented in \cref{tab:water-forecast-task-duration}.
+
+\input{tex/contents/tab/water-forecast-task-duration.tex}
 
 As can be seen, the duration of the task improved quite considerably, ensuring that the performance that was achieved in the previous architecture is still easily achievable and with room to grow.
 
@@ -65,9 +69,11 @@ The choice of the time period was done purposely for several reasons. The first 
 From \Cref{tab:old-deployments-per-quarter}, it also becomes apparent that the development team does not work on multiple projects simultaneously with the same involvement. Each time a Client requires refactoring or updates, the amount of deployments performed to other clients drops drastically. It can also be observed that, unless a refactor or big update is required, the amount of deployments is very reduced or non-existent.
 Finally, the plan to move these older Clients to the new Application that uses the new architecture is being put into place and the updates to the old Applications was put on hold, to focus work on the new architecture. This fact reflects on the lack of deployments for these older Clients since the fourth quarter of 2021, when the project to migrate to the new Application was started.
 
-\input{tex/contents/tab/new-service-deployments-monthly.tex}
+
 
 As for the Deployment Frequency of the new architecture and the new Application, the measurement was performed differently. Since each service is deployed independently, \Cref{tab:new-service-deployments-monthly} gathers the number of deployment per service per time period. Preparing the old architecture's components to accept multiple users and study, implement and test each one of them took some time, the deployment of the new architecture is relatively recent. Therefore, the time periods used in the table are in monthly intervals.
+
+\input{tex/contents/tab/new-service-deployments-monthly.tex}
 
 Although there are only 4 months of available data, a trend can be seen. In comparison with the old architecture, the amount of total deployments per month has increased, increasing the Deployment Frequency.
 
@@ -101,10 +107,10 @@ These are the only two Observability options for the old architecture. Although 
 
 Now, with the new architecture making use of AWS' \gls{ecs} platform to orchestrate each service's containers, with the ability to create metric from the logs it gathers and set alarms for those metrics, the amount and quality of Observability has improved considerably. Since each service is separate and independent, resource usage can be more useful to determine, how, when and why bottlenecks might occur when performing tasks.
 Through monitoring solutions such as AWS' CloudWatch\footnote{https://aws.amazon.com/cloudwatch/ \label{foot:cloudwatch}}, it's possible to obtain knowledge regarding internal system behavior that was not previously possible in the old architecture.
-As an example, the image in \cref{fig:ecs-example-01} shows three usage spikes across different services. Reducing the number of services shown on the graph as in \cref{fig:ecs-example-02} allows the reader to understand that the services using the CPU in those spikes are the Backend API and the Timeseries database: InfluxDB.
+As an example, \cref{fig:ecs-example-01} shows three usage spikes across different services. Reducing the number of services shown on the chart as in \cref{fig:ecs-example-02} allows the reader to understand that the services using the CPU in those spikes are the Backend API and the Timeseries database: InfluxDB.
 Occurring 3 times, and at the same time that the forecasting, optimization and simulation tasks are running attests that the two events are indeed related, as they should be.
 
-As for the services, through this observability tool, it was possible to verify resource utilization by service and by environment. With this information available, it's now possible to analyze if the container running the service is well dimensioned for the service it's running. In \cref{fig:ecs-example-03} it can be seen that, apart to the spikes in CPU usage, most of the services remain idle for the most part, with the exception of the redis services, which are using 15\% of the capacity that was reserved for each container. This indicates that, while not optimal, since the service is already operating on the lowest powered and cheapest container possible, it's well dimensioned. The remaining services, excluding the Backend API and InfluxDB have an average CPU utilization below 5\%, which indicates that for some of those services, reducing their container's CPU capacity can be further achieved.
+As for the services, through this observability tool, it was possible to verify resource utilization by service and by environment. With this information available, it's now possible to analyze if the container running the service is well dimensioned for the service it's running. In \cref{fig:ecs-example-03} it can be seen that, apart to the spikes in CPU usage, most of the services remain idle for the most part, with the exception of the Redis services, which are using 15\% of the capacity that was reserved for each container. This indicates that, while not optimal, since the service is already operating on the lowest powered and cheapest container possible, it's well dimensioned. The remaining services, excluding the Backend API and InfluxDB have an average CPU utilization below 5\%, which indicates that for some of those services, reducing their container's CPU capacity can be further achieved.
 
 
 \input{tex/contents/fig/ecs-example-01.tex}
