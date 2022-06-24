@@ -69,7 +69,7 @@ By properly defining what the software product requirements are, many software p
 
 Requirements specify implementation objectives. They are specifications of the system's behavior, attributes or properties or constraints during the development process~\Parencite{sommerville_sawyer_1997}. Requirements elicitation should be performed during the early stages of the software planning phase in order to prevent major refactoring of code before it's released, which would lead to significant costs for the software development company.
 
-\subsubsection{Identifying Key Stakeholders}\label{state-of-the-art:sss:identifying-key-stakeholders}
+\subsubsection*{Identifying Key Stakeholders}\label{state-of-the-art:sss:identifying-key-stakeholders}
 
 Before requirements elicitation, one of the most important steps is asking from whom should such requirements be elicited from. This step is crucial to prevent functional (and financial) success of the project about to be started~\Parencite{lewellen_2020}.
 
@@ -100,7 +100,7 @@ Code reuse is a common practice nowadays and, similarly, reusing whole software 
 \subsection{Cohesion and Coupling}\label{state-of-the-art:ss:cohesion-and-coupling}
 In software development there two relevant goals during development: \textit{cohesion} and \textit{coupling}, where the first is related to how code is grouped together in a logical unit, the latter is related to how that code is dependent on each other. Ideally, developers nowadays try to develop in order to obtain high cohesion and low coupling~\Parencite{candela_bavota_russo_oliveto_2016}. With high cohesion, developers need not perform code changes in multiple different places to implement new features or fix a bug. With low coupling, those changes are less likely to impact related code.
 
-\subsubsection{Types of Coupling}\label{state-of-the-art:ss:types-of-coupling}
+\subsubsection*{Types of Coupling}\label{state-of-the-art:ss:types-of-coupling}
 
 
 Coupling can happen in multiple, different, manners. Given two components, \textit{A} and \textit{B}, if changing the implementation of \textit{A} requires re-implementation of \textit{B}, then there is \textbf{\textit{implementation coupling}}. This is a regular occurrence when two components share the same database: if one component changes its database-schema structure, then those changes need to be implemented simultaneously in all other components that rely on the same database-schema structure. This is usually easy to fix, by requiring all components to access the database through a single service, like an \as{api}. If the database-schema needs change, then only the service that serves the database information needs to be changed.
@@ -139,7 +139,7 @@ According to IDC's predictions~\Parencite{idc_2019}, \textit{`by 2022, 90\% of a
 
 
 
-\subsubsection{Key Benefits}\label{state-of-the-art:sss:key-benefits}
+\subsubsection*{Key Benefits}\label{state-of-the-art:sss:key-benefits}
 
 In a monolithic architecture, the technologies used throughout the application need to be compatible with each other. Developing an application in Java and C++ and Python is not possible in such a monolithic architecture. 
 By using microservices, developers can now take advantage of \textbf{\textit{Technology Heterogeneity}}. If an application is made up of several, different services that can communicate using shared communication protocols, then there is no reason they can't use different technologies. The application can have services providing, for example, real-time video encoding using CUDA\footnote{\label{foot:cuda}https://developer.nvidia.com/cuda-toolkit} and C, have services performing data science tasks in Python, built for academic research in a production environment, Java-based services providing text analysis, among other examples. The goal with \textit{Technology Heterogeneity} is to allow the development team to choose a technology stack that best suits a particular problem to be solved. If, after implementation, the technology stack is no longer ideal and needs to be replaced, it can happen much more easily and quickly. When transitioning from a monolithic architecture to a microservices architecture, this is ideal since it allows for the old technology stack to be transposed first, while the team readjusts to the new architectural rules. By doing this, the development team doesn't require training in new technologies during the migration since it can be done at a later time, and can implement the new architecture using the previous technology stack. Then, when the team has more availability, individual services can be targeted for upgrade to a better suited technology stack. By using microservices architecture, the amount of work required to replace legacy code or to remove unused code is smaller since the services are more granular and independent. Thus, the cost of replacing code is small and \textbf{\textit{Replaceability}} is optimized.
